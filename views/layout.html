@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name='description' content="{{ description }}">
+	<meta name="keywords" content="{{ keywords }}"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta content="telephone=no" name="format-detection">
+	<meta content="email=no" name="format-detection">
+	<title>{% block title %}{% endblock %}</title>
+	<script>
+	!function(){
+	    var cw=0,ch=0,zoom=1;
+	    function setZoom(){
+	        cw=document.documentElement.clientWidth||document.body.clientWidth;
+	        ch=document.documentElement.clientHeight||document.body.clientHeight;
+	        zoom=cw/320;
+	        if(cw>640){zoom=2;}
+	        window.zoom=zoom/2;
+	        if(ch/cw<1.3){
+	            window.zoom*=.80;
+	        }
+	    }
+	    setZoom();
+	    document.write('<style id="htmlzoom">html{font-size:'+(zoom*50)+'px;}.zoom{zoom:'+window.zoom+';}</style>');
+	    window.addEventListener('resize',function(){
+	        setZoom();
+	        document.getElementById('htmlzoom').innerHTML='html{font-size:'+(zoom*50)+'px;}.zoom{zoom:'+window.zoom+';}';
+	    });
+	}();
+	</script>
+	<link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/github.css">
+	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
+	{% block css %}{% endblock %}
+	<script src="/lib/less.min.js"></script>
+	</head>
+	<body>
+	{% include "parts/header.html" ignore missing %}
+		<div class="content">
+		{% block content%}{% endblock %}
+		</div>
+	{% include "parts/footer.html" ignore missing %}
+	<script src="/lib/jquery-2.2.3.min.js"></script>
+	{% block js %}{% endblock %}
+	</body>
+	</html>

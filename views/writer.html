@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name='description' content="{{ description }}">
+	<meta name="keywords" content="{{ keywords }}"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta content="telephone=no" name="format-detection">
+	<meta content="email=no" name="format-detection">
+	<title>写文章-MySpace</title>
+	<script>
+		// 	!(function(win, doc){
+		// 	function setFontSize() {
+		// 		var winWidth =  window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth;
+		// 		var size = (winWidth / 640) * 100;
+		// 		doc.documentElement.style.fontSize = (size < 100 ? size : 100) + 'px' ;
+		// 	}
+		// 	var evt = 'onorientationchange' in win ? 'orientationchange' : 'resize';
+		// 	var timer = null;
+		// 	win.addEventListener(evt, function () {
+		// 		clearTimeout(timer);
+		// 		timer = setTimeout(setFontSize, 300);
+		// 	}, false);
+
+		// 	win.addEventListener("pageshow", function(e) {
+		// 		if (e.persisted) {
+		// 			clearTimeout(timer);
+		// 			timer = setTimeout(setFontSize, 300);
+		// 		}
+		// 	}, false);
+		// 	setFontSize();
+		// }(window, document));
+	!function(){
+	    var cw=0,ch=0,zoom=1;
+	    function setZoom(){
+	        cw=document.documentElement.clientWidth||document.body.clientWidth;
+	        ch=document.documentElement.clientHeight||document.body.clientHeight;
+	        zoom=cw/320;
+	        if(cw>640){zoom=2;}
+	        window.zoom=zoom/2;
+	        if(ch/cw<1.3){
+	            window.zoom*=.80;
+	        }
+	    }
+	    setZoom();
+	    document.write('<style id="htmlzoom">html{font-size:'+(zoom*50)+'px;}.zoom{zoom:'+window.zoom+';}</style>');
+	    window.addEventListener('resize',function(){
+	        setZoom();
+	        document.getElementById('htmlzoom').innerHTML='html{font-size:'+(zoom*50)+'px;}.zoom{zoom:'+window.zoom+';}';
+	    });
+	}();
+	</script>
+	<link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/editor/simplemde.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/github.css">
+	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
+	<script src="/lib/less.min.js"></script>
+</head>
+<body>
+<div class="writer">
+	<div class="write-mode">
+		<aside class="aside">
+		<div class="btn-wrap">
+			<a class="btn" href="/">回首页</a>
+		</div>
+			<a class="add-notes" href="javascript:;"><i class="fa fa-plus"></i> 新建文集</a>
+			<ul class="notes-list">
+				<li class="active"><a href="javascript:;">生活</a><i class="fa fa-gear"></i></li>
+				<li><a href="javascript:;">技术</a><i class="fa fa-gear"></i></li>
+			</ul>
+			<a href="#trash" class="icon"><i class="fa fa-trash-o "></i>	回收站</h3>
+			<a href="#tags" class="icon"><i class="fa fa-tags"></i>	标签</h3>
+		</aside>
+		<div class="middle">
+			<a id="addArticle" href="javascript:;" class="add-article"><i class="fa fa-plus-circle"></i> 新建文章</a>
+			<ul class="article-list"></ul>
+			<!-- <a id="tailAdd" class="tail-add" href="javascript:;"><i class="fa fa-plus"></i> 在下方新建文章</a> -->
+			<div id="articleMenu" class="menu">
+				<ul></ul>
+			</div>
+		</div>
+		<div class="main">
+			<div class="title-wrap">
+				<input class="title" type="text" name="title" id="title" placeholder="这是标题">
+			</div>
+			<div class="tag-wrap">
+				<i class="fa fa-tags"></i>
+				<ul id="tagList"><li class="input">
+						<input id="tag" class="tag-input" type="text" placeholder="添加标签">
+						<ul class="suggest" id="suggest"></ul>
+					</li>
+				</ul>
+			</div>
+			<textarea name="article" id="article" cols="30" rows="10" class="text"></textarea>
+			<div id="outline" class="outline" title="大纲">
+				<h3>文章大纲</h3>
+				<ul></ul>
+			</div>
+			<i id="loading" class="loading fa fa-spinner fa-pulse"></i>
+			<div id="msg" class="msg">
+				保存成功
+			</div>
+		</div>	
+	</div>
+	<div class="trash-mode">
+		<h2>正在开发中。。。</h2>
+	</div>
+	<div class="tags-mode">
+		<h2>正在开发中。。。</h2>
+	</div>
+</div>
+<script>//将数据直接渲染到页面
+var TagArr=[],obj={},Tags={};
+// var ArticleArr=[];
+{% for tag in tags %}
+	obj={}
+	{% for p in tag %}
+		obj['{{loop.key}}']='{{p}}';
+	{% endfor %}
+	TagArr.push(obj);
+{% endfor %}
+
+for(let [i,obj] of TagArr.entries()){
+	Tags[obj.name]=Tags[obj.name]||{};
+	Tags[obj.name].tags=Tags[obj.name].tags||[];
+	Tags[obj.name].tags.push(obj.article_id);
+	Tags[obj.name].name=obj.name;
+	Tags[obj.name].id=obj.tag_id;
+}
+</script>
+<script src="/lib/jquery-2.2.3.min.js"></script>
+<script src="/lib/editor/simplemde.min.js"></script>
+<script src="/lib/highlight/highlight.min.js"></script>
+<script src="/js/writer.js"></script>
+</body>
+</html>

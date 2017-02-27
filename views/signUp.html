@@ -1,0 +1,45 @@
+{% extends 'layout.html' %} 
+{% block title %}注册-MySpace{% endblock %}
+{% block js %}
+<script>
+$('#register').on('click', async (event) => {
+    let [name, email, password] = [$('#name').val().trim(), $('#email').val().trim(), $('#password').val().trim()];
+    if (!name || !email || !password) {
+        alert('值不能为空！');
+        return;
+    }
+    try{
+	    var data = await $.post('/register',{
+	    	name:name,
+	    	email:email,
+	    	password:password
+	    });
+	    if(data.status==0){
+	    	alert('注册成功！');
+	    	location.href='/';
+	    } else {
+	    	alert('注册失败！');
+	    }
+	    
+    } catch(err){
+    	console.log(err);
+    	alert(err.message);
+    }
+});
+$(document)
+</script>
+{% endblock %} 
+{% block content %}
+<div class="sign">
+    <div class="main">
+    	<ul>
+    		<li><a href="/signIn">登 录</a></li>
+    		<li><a class="active" href="javascript:;">注 册</a></li>
+    	</ul>
+        <div class="input-control"><i class="fa fa-user"></i><input type="text" name="name" id="name" placeholder="昵称"></div>
+        <div class="input-control"><i class="fa fa-envelope"></i><input type="text" name="email" id="email" placeholder="邮箱"></div>
+        <div class="input-control"><i class="fa fa-lock"></i><input type="password" name="password" id="password" placeholder="密码"></div>
+        <button class="sign-btn" id="register">注 册</button>
+    </div>
+</div>
+{% endblock %}

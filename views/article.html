@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block title %}{{article.title}}-MySpace{% endblock %}
+{% block content %}
+<article class="article">
+	<h3 class="article-title">{{article.title}}</h3>
+	<time class="time">{{article.create_date}}</time>
+	<ul class="tags">{% for tag in article.tags %}<li><a href="/tag/{{tag.id}}/1">{{tag.name}}</a></li>{% endfor %}</ul>
+	<section class="article-content">{{article.content}}</section>
+</article>
+{% endblock %}

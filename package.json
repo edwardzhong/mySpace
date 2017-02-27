@@ -1,0 +1,38 @@
+{
+  "name": "myblog",
+  "version": "1.0.0",
+  "description": "it's a blog site",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "koa",
+    "mysql"
+  ],
+  "author": "Jeff Zhong",
+  "license": "MIT",
+  "dependencies": {
+    "co": "^4.6.0",
+    "highlight.js": "^9.9.0",
+    "koa": "^2.0.0",
+    "koa-body": "^2.0.0",
+    "koa-convert": "^1.2.0",
+    "koa-favicon": "^2.0.0",
+    "koa-log4": "^2.1.0",
+    "koa-logger": "^1.3.1",
+    "koa-router": "^7.0.0",
+    "koa-session2": "^2.0.0",
+    "koa-static": "^2.1.0",
+    "koa-swig": "^2.0.0",
+    "marked": "^0.3.6",
+    "mysql": "^2.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-less": "^3.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-clean-css": "^2.4.0",
+    "gulp-concat-css": "^2.3.0"
+  }
+}

@@ -1,0 +1,101 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    height: 100%;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    color: #333;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+i, em, b {
+    font-style: normal;
+}
+img {
+    vertical-align: top;
+}
+input, textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: none;
+    resize: none;
+    font-family: Helvetica, STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Arial;
+}
+center, title, hr {
+    display: none;
+}
+.sign {
+    height: 100%;
+    min-height: 750px;
+    text-align: center;
+    font-size: 14px;
+    background-color: #f1f1f1;
+}
+
+.main {
+    width: 400px;
+    margin: 60px auto 0;
+    padding: 30px 50px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, .1);
+    vertical-align: middle;
+    display: inline-block;
+}
+
+h3 {
+    margin: 10px 0;
+}
+
+input {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    outline: 0;
+    padding: 10px;
+    border: 1px solid #c8c8c8;
+}
+.main input:first-of-type{
+    border-radius: 4px 4px 0 0;
+}
+.main input:last-of-type{
+    border-radius: 0 0 4px 4px;
+}
+.main input:nth-of-type(n+2){
+    margin-top: -1px;
+}
+
+.sign-btn {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #3194d0;
+    background-color: #3194d0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    margin: 10px 0;
+    outline: 0;
+    cursor: pointer
+}
+
+.sign-btn:hover {
+    background-color: #277aad;
+}
+.sign-ul{
+    list-style-type: none;
+}
+.sign-ul li{
+    background-color: #0767c8;
+}
+.sign-ul li a{
+
+}
