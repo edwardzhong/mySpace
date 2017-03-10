@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block title %}{{article.title}}-MySpace{% endblock %}
 {% block content %}
+<nav class="bread"><a href="/">首页</a></nav>
 <article class="article">
 	<h3 class="article-title">{{article.title}}</h3>
 	<time class="time">{{article.create_date}}</time>

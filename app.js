@@ -10,9 +10,20 @@ const router = require('koa-router')();
 const addRouters = require('./routers');
 const appConfig = require('./config/app');
 const favicon = require('koa-favicon');
+const cluster = require('cluster');
+const schedule = require('./schedule');
+const log=require('./logger').logger();
+const connectLog= require('./common/connectLog');
+
+// 定时任务，只在主进程执行
+if(cluster.isMaster) {
+    schedule.execute();
+}
 
 // 显示访问连接记录
 app.use(logger());
+// 记录访问连接日志
+app.use(connectLog());
 
 // session
 app.use(session({
@@ -23,6 +34,8 @@ app.use(session({
 // parse request请求信息
 app.use(koaBody({ 
     jsonLimit:1024*1024*5,
+    formLimit:1024*1024*5,
+    textLimit:1024*1024*5,
     formidable: { uploadDir: __dirname + '/public/upload' } 
 }));
 
@@ -49,13 +62,12 @@ app.use(router.routes())
 
 // koa已经有默认的中间件onerror对错误进行了处理，注册其中的error事件
 app.on('error', (err, ctx) => {
-    if (appConfig.env === 'dev') { //dev环境错误抛出到前端
         // ctx.body=err;
         ctx.status = 500;
         ctx.statusText = 'Internal Server Error';
+        log.error(err);
+    if (appConfig.env === 'dev') { //dev环境错误抛出到前端
         ctx.res.end(err.message); //使用end结束输出
-    } else {
-        // todo: logging
     }
 });
 
@@ -69,5 +81,6 @@ if (!module.parent) {
     //启动服务
     let port = appConfig.port || 3002;
     app.listen(port);
+    log.info('app start');
     console.log('Running site at: http://localhost:%d', port);
 }

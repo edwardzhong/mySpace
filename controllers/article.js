@@ -3,6 +3,7 @@ const tagDao=require('../daos/tag');
 const util=require('../common/util');
 const marked = require('marked');
 const hl=require('highlight.js');
+const log=require('../logger').logger();
 
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -21,13 +22,20 @@ marked.setOptions({
 exports.article=async function(ctx,next){
 	let articleId=ctx.params.id;
 	if(!articleId)return;
-	let [article]=await articleDao.getArticleById(articleId);
-	let tags=await tagDao.getTagsByArticleId(articleId);
-	if(article){
-		article.content=marked(util.htmlDecode(article.content));
+	try{
+		let [article]=await articleDao.getArticleById(articleId);
+		let tags=await tagDao.getTagsByArticleId(articleId);
+		if(article){
+			article.content=marked(util.htmlDecode(article.content));
+		}
+		article.tags=tags;
+		ctx.body=await ctx.render('article',{article:article,isLogin:ctx.session&&ctx.session.user});
+	} catch(err){
+		log.error(err);
+        ctx.status = 500;
+        ctx.statusText = 'Internal Server Error';
+        ctx.res.end(err.message);
 	}
-	article.tags=tags;
-	ctx.body=await ctx.render('article',{article:article});
 };
 
 /**
@@ -45,12 +53,22 @@ exports.create=async function(ctx,next){
 		return;
 	}
 	let user=ctx.session.user;
-	let ret=await articleDao.createNew({author_id:user.id});
-	ctx.body=await {
-		status:0,
-		insert_id:ret.insertId,
-		msg:'文章新增成功'
-	};
+	try{
+		let ret=await articleDao.createNew({author_id:user.id});
+		ctx.body=await {
+			status:0,
+			insert_id:ret.insertId,
+			msg:'文章新增成功'
+		};
+	} catch(err){
+		log.error(err);
+		ctx.body=await{
+			status:-1,
+			error:err,
+			msg:'系统错误'
+		};
+	}
+
 };
 
 /**
@@ -62,17 +80,26 @@ exports.create=async function(ctx,next){
 exports.getArticle=async function(ctx,next){
 	let articleId = ctx.query.id;
 	if(!articleId) return;
-	let [article]=await articleDao.getArticleById(articleId);
-	let tags=await tagDao.getTagsByArticleId(articleId);
-	if(article){
-		article.content=util.htmlDecode(article.content);
+	try{
+		let [article]=await articleDao.getArticleById(articleId);
+		let tags=await tagDao.getTagsByArticleId(articleId);
+		if(article){
+			article.content=util.htmlDecode(article.content);
+		}
+		article.tags=tags;
+		ctx.body=await {
+			status:0,
+			article:article,
+			msg:'获取成功'
+		};
+	} catch(err){
+		log.error(err);
+		ctx.body=await{
+			status:-1,
+			error:err,
+			msg:'系统错误'
+		};
 	}
-	article.tags=tags;
-	ctx.body=await {
-		status:0,
-		article:article,
-		msg:'获取成功'
-	};
 };
 
 /**
@@ -98,6 +125,7 @@ exports.saveArticle =async function(ctx,next){
 			msg:'保存成功'
 		};
 	} catch(err){
+		log.error(err);
 		ctx.body=await{
 			status:-1,
 			error:err,
@@ -120,10 +148,11 @@ exports.getUserArticles=async function(ctx,next){
 		};
 		return;
 	}
-	let user=ctx.session.user;
+	let user=ctx.session.user,
+		form=ctx.query;
 	try{
 		let tags=await tagDao.getTagsByUser(user.id);
-		let ret=await articleDao.getArticleByUserId(user.id);
+		let ret=await articleDao.getArticleByUserId([user.id,form.is_delete]);
 		for(let [i,obj] of ret.entries()){
 			obj.tags=tags.filter(tag=>tag.article_id==obj.id);
 			obj.summary=util.getContentSummary(marked,obj.content,20);
@@ -135,15 +164,22 @@ exports.getUserArticles=async function(ctx,next){
 			msg:'获取成功'
 		};
 	} catch(err){
+		log.error(err);
 		ctx.body=await{
 			status:-1,
-			error:err,
+			err:err,
 			msg:'系统错误'
 		};
 	}
 
 };
 
+/**
+ * 设置发布标志
+ * @param  {[type]}   ctx  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.setPublish=async function(ctx,next){
 	if(!ctx.session||!ctx.session.user){
 		ctx.body=await {
@@ -165,14 +201,22 @@ exports.setPublish=async function(ctx,next){
 			msg:'设置成功'
 		};
 	} catch(err){
+		log.error(err);
 		ctx.body=await{
 			status:0,
 			isPublish:isPublish,
-			msg:'设置失败'
+			msg:'设置失败',
+			err:err
 		};
 	}
 };
 
+/**
+ * 设置删除标志
+ * @param  {[type]}   ctx  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.setDelete=async function(ctx,next){
 	if(!ctx.session||!ctx.session.user){
 		ctx.body=await {
@@ -191,14 +235,49 @@ exports.setDelete=async function(ctx,next){
 		ctx.body=await{
 			status:0,
 			isDelete:newDelete,
-			msg:'删除成功'
+			msg:newDelete==1?'删除成功':'恢复成功'
 		};
 	} catch(err){
+		log.error(err);
 		ctx.body=await{
 			status:0,
 			isDelete:isDelete,
-			msg:'删除失败'
+			msg:newDelete==1?'删除失败':'恢复失败',
+			err:err
 		};
 	}
 };
 
+/**
+ * 彻底删除
+ * @param  {[type]}   ctx  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
+exports.realDelete=async function(ctx,next){
+	if(!ctx.session||!ctx.session.user){
+		ctx.body=await {
+			status:1,
+			msg:'未登录'
+		};
+		return;
+	}
+	let form=ctx.query,
+		user=ctx.session.user;
+	try{
+		await articleDao.realDelete(form.id);
+		await tagDao.deleteTagArticleByArticleId([user.id,form.id]);
+		await tagDao.deleteEmptyTag();
+		ctx.body=await {
+			status:0,
+			msg:'删除成功'
+		};
+	} catch(err){
+		log.error(err);
+		ctx.body=await {
+			status:0,
+			msg:'删除失败',
+			err:err
+		};
+	}
+};

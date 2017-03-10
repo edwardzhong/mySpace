@@ -1,5 +1,6 @@
 const userDao=require('../daos/user');
 const crypto=require('crypto');
+const log=require('../logger').logger();
 
 /**
  * 登录
@@ -8,32 +9,40 @@ const crypto=require('crypto');
  * @return {[type]}        [description]
  */
 exports.login=async function(ctx,next){
-	let form=ctx.request.body;
-	let users= await userDao.query({email:form.email});
-	let ret={};
-	
-	if(users.length){
-		let user=users[0];
-		if(user.hash_password==encryptPass(form.password,user.salt)){
-			ret={
-				status:0,
-				msg:'登录成功'
-			};
-			ctx.session.user=user;
+	try{
+		let form=ctx.request.body;
+		let users= await userDao.query({email:form.email});
+		let ret={};
+		
+		if(users.length){
+			let user=users[0];
+			if(user.hash_password==encryptPass(form.password,user.salt)){
+				ret={
+					status:0,
+					msg:'登录成功'
+				};
+				ctx.session.user=user;
+			} else {
+				ret={
+					status:2,
+					msg:'密码错误'
+				};
+			}
 		} else {
 			ret={
-				status:2,
-				msg:'密码错误'
+				status:1,
+				msg:'用户不存在'
 			};
 		}
-	} else {
-		ret={
-			status:1,
-			msg:'用户不存在'
+		ctx.body=await ret;
+	} catch(err){
+		log.error(err);
+		ctx.body=await{
+			status:-1,
+			error:err,
+			msg:'系统错误'
 		};
 	}
-
-	ctx.body=await ret;
 };
 
 /**
@@ -44,16 +53,24 @@ exports.login=async function(ctx,next){
  */
 exports.register=async function(ctx,next){
 	let form=ctx.request.body;
-	
-	form.salt=makeSalt();
-	form.hash_password=encryptPass(form.password,form.salt);
-	delete form.password;
-	
-	let result=await userDao.insert(form);
-	ctx.body=await {
-		status:0,
-		msg:'注册成功！',
-		result:result
+	try{
+		form.salt=makeSalt();
+		form.hash_password=encryptPass(form.password,form.salt);
+		delete form.password;
+		
+		let result=await userDao.insert(form);
+		ctx.body=await {
+			status:0,
+			msg:'注册成功！',
+			result:result
+		}
+	} catch(err){
+		log.error(err);
+		ctx.body=await{
+			status:-1,
+			error:err,
+			msg:'系统错误'
+		};
 	}
 };
 

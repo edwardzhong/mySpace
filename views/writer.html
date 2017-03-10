@@ -11,48 +11,6 @@
 	<meta content="telephone=no" name="format-detection">
 	<meta content="email=no" name="format-detection">
 	<title>写文章-MySpace</title>
-	<script>
-		// 	!(function(win, doc){
-		// 	function setFontSize() {
-		// 		var winWidth =  window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth;
-		// 		var size = (winWidth / 640) * 100;
-		// 		doc.documentElement.style.fontSize = (size < 100 ? size : 100) + 'px' ;
-		// 	}
-		// 	var evt = 'onorientationchange' in win ? 'orientationchange' : 'resize';
-		// 	var timer = null;
-		// 	win.addEventListener(evt, function () {
-		// 		clearTimeout(timer);
-		// 		timer = setTimeout(setFontSize, 300);
-		// 	}, false);
-
-		// 	win.addEventListener("pageshow", function(e) {
-		// 		if (e.persisted) {
-		// 			clearTimeout(timer);
-		// 			timer = setTimeout(setFontSize, 300);
-		// 		}
-		// 	}, false);
-		// 	setFontSize();
-		// }(window, document));
-	!function(){
-	    var cw=0,ch=0,zoom=1;
-	    function setZoom(){
-	        cw=document.documentElement.clientWidth||document.body.clientWidth;
-	        ch=document.documentElement.clientHeight||document.body.clientHeight;
-	        zoom=cw/320;
-	        if(cw>640){zoom=2;}
-	        window.zoom=zoom/2;
-	        if(ch/cw<1.3){
-	            window.zoom*=.80;
-	        }
-	    }
-	    setZoom();
-	    document.write('<style id="htmlzoom">html{font-size:'+(zoom*50)+'px;}.zoom{zoom:'+window.zoom+';}</style>');
-	    window.addEventListener('resize',function(){
-	        setZoom();
-	        document.getElementById('htmlzoom').innerHTML='html{font-size:'+(zoom*50)+'px;}.zoom{zoom:'+window.zoom+';}';
-	    });
-	}();
-	</script>
 	<link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css">
 	<link rel="stylesheet" href="/lib/editor/simplemde.min.css">
 	<link rel="stylesheet" href="/lib/highlight/styles/github.css">
@@ -60,7 +18,7 @@
 	<script src="/lib/less.min.js"></script>
 </head>
 <body>
-<div class="writer">
+<div id="write" class="writer">
 	<div class="write-mode">
 		<aside class="aside">
 		<div class="btn-wrap">
@@ -106,7 +64,21 @@
 		</div>	
 	</div>
 	<div class="trash-mode">
-		<h2>正在开发中。。。</h2>
+		<aside>
+			<h2 class="title"><i class="fa fa-trash"></i> 回收站(<span id="trashNum">0</span>)</h2>
+			<ul class="tArticle-list"></ul>
+		</aside>
+		<div class="main">
+			<article>
+				<div class="title-wrap">
+					<h3 id="trashTitle" class="trash-title"></h3>
+					<button id="recover" class="btn-recover">恢复</button>
+					<button id="rDelete" class="btn-delete">彻底删除</button>
+				</div>
+				<div style="height: 100px;"></div>
+				<div id="trashContent" class="trash-content"></div>
+			</article>
+		</div>
 	</div>
 	<div class="tags-mode">
 		<h2>正在开发中。。。</h2>

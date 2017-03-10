@@ -1,4 +1,5 @@
 const toolDao=require('../daos/tool');
+const log=require('../logger').logger();
 
 /**
  * 执行sql语句
@@ -8,9 +9,19 @@ const toolDao=require('../daos/tool');
  */
 exports.query=async function (ctx,next){
 	let form=ctx.request.body;
-	let ret= await toolDao.query(form.cmd);
-	ctx.body=await {
-		status:0,
-		ret:ret
-	};
+	try{
+		let ret= await toolDao.query(form.cmd);
+		ctx.body=await {
+			status:0,
+			ret:ret
+		};
+	} catch(err){
+		log.error(err);
+		ctx.body=await {
+			status:-1,
+			error:err,
+			msg:'系统错误'
+		};
+	}
+
 };

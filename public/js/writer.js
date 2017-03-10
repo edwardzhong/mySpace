@@ -17,11 +17,10 @@
 	 	placeholder:'这里填写文章内容...'
 	}),codeMirror=simplemde.codemirror;
 
-	var Datas=[],
-		dataHash={},
+	var dataHash={},
 		selectArticleId='',
 		changeEvent= 'oninput' in window?'input':'onpropertychange' in window?'propertychange':'keyup',
-		liTpl = obj => `<li data-articleId="${obj.id}" class="active">
+		liTpl = obj => `<li data-articleId="${obj.id}">
 							<i class="set-article fa fa-gear"></i>
 							<div>
 								<i class="file-type fa fa-file ${obj.is_publish==1?'is-publish':''}"></i>
@@ -29,7 +28,8 @@
 								<p class="desc">${obj.summary}</p>
 								<p class="word-count">字数：0</p>
 							</div>
-						</li>`;
+						</li>`,
+		tLiTpl=obj=>`<li data-articleId="${obj.id}"><i class="fa fa-file-text"></i><span>${obj.days}天后清除</span><p>${obj.title}</p></li>`;
 
     function Controller(){
     	this.prevHash='';
@@ -60,38 +60,178 @@
     	article:function(hash,id){
     		var self=this,lis=[],li;
     		if(self.prevHash!='article'){
-				Datas.forEach(function(obj,i){
+    			getDatas({is_delete:0},function(data){
+					data.forEach(function(obj,i){
+						dataHash[obj.id]=obj;
+						obj.delete_date=new Date(obj.update_date)
+						if(obj.is_delete!=1){
+							lis.push(liTpl(obj));
+						}
+					});
+					$('.write-mode').show().siblings().hide();
+					if(lis.length){
+						$('.article-list').html(lis.join(''));
+						select();
+					}
+				});
+    		} else {
+    			select();
+    		}
+	    	function select(){
+				// if(!id){
+	   //  			li=$('.article-list').find('li').first();
+	   //  			if(li.length){
+	   //  				articleHash(li.attr('data-articleId'));
+	   //  			}
+	   //  		} else 
+	    		if(id){
+	    			li=$('.article-list').find('[data-articleId='+id+']');
+	    			if(li.length){
+	    				selectArticle(id);
+	    			} else {
+	    				self.selectHash('article');
+	    			}
+	    		}
+	    	}
+    	},
+    	trash:function(hash){
+    		getDatas({is_delete:1},function(data){
+	    		var lis=[],d;
+				data.forEach(function(obj,i){
+					d=getDateString(obj.update_date,30);
 					dataHash[obj.id]=obj;
-					if(obj.is_delete!=1){
-						lis.push(liTpl(obj));
+					if(obj.is_delete==1){
+						dataHash[obj.id].is_save=dataHash[obj.id].title?true:false;
+						dataHash[obj.id].title=dataHash[obj.id].title||'无标题文章';
+						dataHash[obj.id].days=d.days;
+						dataHash[obj.id].delete_date=d.date;
+						lis.push(tLiTpl(obj));
 					}
 				});
 				if(lis.length){
-					$('.article-list').html(lis.join(''));
+					$('.tArticle-list').html(lis.join(''));
+					selectTrashArticle(0);
 				}
-				$('.write-mode').show().siblings().hide();
-    		}
-
-    		if(!id){
-    			li=$('.article-list').find('li').first();
-    			if(li.length){
-    				articleHash(li.attr('data-articleId'));
-    			}
-    		} else {
-    			li=$('.article-list').find('[data-articleId='+id+']');
-    			if(li.length){
-    				selectArticle(id);
-    			}
-    		}
-    	},
-    	trash:function(hash){
-    		$('.trash-mode').show().siblings().hide();
+				$('#trashNum').html(lis.length);
+	    		$('.trash-mode').show().siblings().hide();
+	    	});
     	},
     	tags:function(hash){
 
     	}
     };
 
+function getDateString(str,days){
+	var date=new Date(str).getTime(),
+		day=1000*3600*24,
+		dDate=new Date(date+day*days),
+		curr=new Date();
+
+	return{
+		date:dDate.getFullYear()+'/'+('0'+(dDate.getMonth()+1)).slice(-2)+'/'+('0'+dDate.getDate()).slice(-2),
+		days:Math.floor((dDate-curr)/day)
+	};
+}
+
+function selectTrashArticle(i){
+	var lis=$('.tArticle-list').find('li'),
+		li=lis.eq(i),
+		$title=$('#trashTitle'),
+		$content=$('#trashContent');
+	$title.empty();
+	$content.empty();
+	selectArticleId='';
+	if(li.length){
+		selectArticleId=li.attr('data-articleId'), article=dataHash[selectArticleId];
+		li.addClass('active').siblings().removeClass('active');
+		$title.html(article.title);
+		$content.html(article.content.replace(/\n/g,'<br/>'));
+	}
+}
+$('.tArticle-list').on('click','li',function(e){
+	var self=$(this);
+	selectTrashArticle(self.index());
+}).on('mouseover','li',function(e){
+	var self=$(this), id=self.attr('data-articleId'), article=dataHash[id];
+	self.find('span').html(article.delete_date+'后清除');
+}).on('mouseout','li',function(e){
+	var self=$(this), id=self.attr('data-articleId'), article=dataHash[id];
+	self.find('span').html(article.days+'天后清除');
+});
+$('#recover').on('click',function(e){
+	$.get('/delete?_t='+Math.random(),{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
+		if(data.status==1){
+			location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+		} else if(data.status==0){
+			trashDeleteFn(data);
+		}
+	});
+});
+$('#rDelete').on('click',function(e){
+	var article=dataHash[selectArticleId];
+	if(!article) return;
+	showCommonDialog(`确定彻底删除文章《${article.title}》？`,function(){
+		var dialog=this;
+		$.get('/realDelete',{id:selectArticleId}).done(function(data){
+			if(data.status==1){
+				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+			} else if(data.status==0){
+				trashDeleteFn(data,true);
+				dialog.remove();
+			}
+		});
+	});
+});
+
+function trashDeleteFn(data,realDelete){
+	if(data.status==0){
+		var $li=$('.tArticle-list').find('[data-articleId='+selectArticleId+']'),
+		index=$li.next().length?$li.index():$li.prev().length?$li.prev().index():0;
+		dataHash[selectArticleId].is_delete=data.isDelete;
+		if(realDelete){
+			delete dataHash[selectArticleId];
+			// Datas.forEach(function(item,i){
+			// 	if(item.id==selectArticleId){
+			// 		Datas.splice(i,1);
+			// 		return false;
+			// 	}
+			// });
+		}
+		$li.remove();
+		selectTrashArticle(index);
+		$('#trashNum').html($('.tArticle-list').find('li').length);
+	} else {
+		alert(data.msg);
+	}
+}
+
+function dialog(txt,cancelFn,confirmFn){
+	var tpl=`<div class="dialog-wrap">
+		<div class="dialog">
+				<div class="txt-wrap">
+					<p>${txt}</p>
+				</div>
+				<div class="btn-wrap">
+					<button class="cancel">取消</button>
+					<button class="confirm">确定</button>
+				</div>
+			</div>
+		</div>`;
+	var $elem=$(tpl);
+	$(document.body).append($elem);
+	$elem.find('.cancel').on('click',function(){
+		cancelFn.call($elem);
+	});
+	$elem.find('.confirm').on('click',function(){
+		confirmFn.call($elem);
+	});
+}
+
+function showCommonDialog(txt,fn){
+	dialog(txt,function(){
+		this.remove();
+	},fn);
+}
 	/***************************
     			初始化
     ****************************/
@@ -99,15 +239,17 @@
     $(window).on('hashchange', function(e) {
         App.selectHash(location.hash.replace('#', ''));
     });
+    App.selectHash(location.hash.substr(1));
 
-    $.get('/getUserArticles').done(function(data){
-		if(data.status==1){
-			location.href='/signIn?returnUrl=/writer';
-		} else if(data.status==0){
-			Datas=data.list;
-			App.selectHash(location.hash.substr(1));
-		}
-    });
+    function getDatas(params,cb){
+    	$.get('/getUserArticles?_t='+Math.random(),params).done(function(data){
+			if(data.status==1){
+				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+			} else if(data.status==0){
+				cb(data.list);
+			}
+	    });
+    }
 
 	codeMirror.on("change", function(){
 		dataHash[selectArticleId].content=simplemde.value();
@@ -175,7 +317,10 @@
 		});
 		$elem.find('ul').empty().append(fragment);
 	}
-
+	$('[data-tag=download]').on('click',function(e){
+		if(!selectArticleId)return;
+		location.href='/downloadFile?id='+selectArticleId;
+	});
 	// 上传文件
 	$('[data-tag=upload]').on('click',function(e){
 		var fileElem=document.createElement('input');
@@ -208,40 +353,65 @@
     	reader = new FileReader();
         reader.onloadend=function(e){
         	simplemde.value(e.target.result);
+        	simplemde.focus();
         };
         reader.readAsText(file);
     };
     // 保存
-    $('[data-tag=save]').on('click',function(e){
-    	$('#loading').show();
-    	$.post('/saveArticle',{title:$('#title').val(),content:dataHash[selectArticleId].content,articleId:selectArticleId}).done(function(data){
-    		$('#loading').hide();
+    $('[data-tag=save]').on('click',function(){
+    	saveFn(function(data){
     		if(data.status==0){
     			showSucc(data.msg);
     		} else {
     			showError(data.msg);
     		}
-    	});
+    	})
     });
     // 发布
     $('.main [data-tag=publish]').on('click',publishFn);
     $('#articleMenu').on('click','[data-tag=publish]',publishFn);
     $('#articleMenu').on('click','[data-tag=delete]',deleteFn);
+
     function publishFn(){
+    	if(!dataHash[selectArticleId].is_save){saveFn(); }
     	$.get('/publish',{articleId:selectArticleId,isPublish:dataHash[selectArticleId].is_publish}).done(function(data){
-    		dataHash[selectArticleId].is_publish=data.isPublish;
-    		setPublishStatus(dataHash[selectArticleId]);
+    		if(data.status==1){
+				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+			} else if(data.status==0){
+	    		dataHash[selectArticleId].is_publish=data.isPublish;
+	    		setPublishStatus(dataHash[selectArticleId]);
+	    		if(data.isPublish==1){
+	    			$('[data-tag=publish]').attr('class','hover fa fa-remove no-disable').html(' 取消发布');
+	    		}
+			}
     	});
     }
 
     function deleteFn(){
-    	$.get('/delete',{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
+    	$.get('/delete?_t='+Math.random(),{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
     		$('#articleMenu').hide();
-    		dataHash[selectArticleId].is_delete=data.isDelete;
-    		var $elem=$('.article-list').find('[data-articleId='+selectArticleId+']'),
+    		if(data.status==1){
+    			location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+    		} else if(data.status==0){
+    			dataHash[selectArticleId].is_delete=data.isDelete;
+    			var $elem=$('.article-list').find('[data-articleId='+selectArticleId+']'),
     			nextId=$elem.next().length?$elem.next().attr('data-articleId'):$elem.prev().length?$elem.prev().attr('data-articleId'):-1;
-    		$elem.remove();
-    		articleHash(nextId);
+    			$elem.remove();
+    			articleHash(nextId);
+    		}
+    	});
+    }
+
+    function saveFn(cb){
+    	$('#loading').show();
+    	dataHash[selectArticleId].is_save=true;
+    	$.post('/saveArticle?_t='+Math.random(),{title:$('#title').val(),content:dataHash[selectArticleId].content,articleId:selectArticleId}).done(function(data){
+    		if(data.status==1){
+    			location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+    		} else if(data.status==0){
+    			$('#loading').hide();
+    			cb&&cb(data);
+    		}
     	});
     }
 
@@ -264,8 +434,10 @@
     	var $list=$('.article-list'),
     		self=this;
 
-		$.get('/createNew').done(function(data){
-			if(data.status==0){
+		$.get('/createNew?_t='+Math.random()).done(function(data){
+			if(data.status==1){
+				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+			} else if(data.status==0){
 				var article={
 		    		id:data.insert_id,
 		    		title:'无标题文章',
@@ -273,9 +445,13 @@
 		    		summary:'',
 		    		is_publish:0,
 		    		is_delete:0,
-		    		tags:[]
+		    		is_save:false,
+		    		tags:[],
+		    		update_date:new Date().getTime(),
+		    		create_date:new Date().getTime()
 		    	};
 		    	var	liTemp=liTpl(article);
+		    	// Datas.unshift(article);
 		    	dataHash[article.id]=article;
 
 				var $li=$(liTemp);
@@ -319,7 +495,6 @@
 	    		top:(top+scrollTop+30)+'px'
 	    	});
     	}
-
     });
 
     $('.main').on('mouseover','[data-tag=publish]',function(e){
@@ -360,10 +535,14 @@
     	$li.addClass('active').siblings('.active').removeClass('active');
     	
     	if(!article){
-	    	$.get('/getArticle',{id:id}).done(function(data){
-	    		article=data.article;
-	    		setArticle(article);
-	    	});
+    		$.get('/getArticle',{id:id}).done(function(data){
+    			if(data.status==1){
+    				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+    			} else if(data.status==0){
+    				article=data.article;
+    				setArticle(article);
+    			}
+    		});
     	} else {
 	    	setArticle(article);
     	}
@@ -397,7 +576,6 @@
 			});
 		}
     }
-
 
 
     function setPublishStatus(article){
@@ -453,6 +631,9 @@ function getContentSummary(str,n){
 	return ret;	
 }
 
+/**
+ * 标签下拉结果提示
+ */
 function Tag(){
 	this.input=document.getElementById('tag');
 	this.ul=document.getElementById('suggest');
@@ -568,8 +749,9 @@ Tag.prototype={
 			obj.tags.push(selectArticleId);
 		}
 		$.get('/addTag',{name:val,articleId:selectArticleId,tagId:obj.id}).done(function(data){
-			console.log(data);
-			if(status==0){
+			if(data.status==1){
+				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+			} else if(data.status==0){
 				Tags[val].id=data.tagId;
 				$('.input').before(`<li data-id="${data.tagId}" data-name="${val}">${val} <i class="fa fa-remove"></i></li>`);
 				dataHash[selectArticleId].tags.push({
@@ -598,14 +780,100 @@ $('#tagList').on('click','i',function(){
 		} else {
 			obj.tags.splice(obj.tags.indexOf(selectArticleId),1);
 		}
-		$.get('/deleteTag',{articleId:selectArticleId,tagId:tagId,isDeleteTag:isDeleteTag}).done(function(data){
-			console.log(data);
-			dataHash[selectArticleId].tags.forEach(function(item,i){
-				if(item.tag_id==tagId){
-					dataHash[selectArticleId].tags.splice(i,1);return false;
-				}
-			});
+		$.get('/deleteTag?_t='+Math.random(),{articleId:selectArticleId,tagId:tagId,isDeleteTag:isDeleteTag}).done(function(data){
+			if(data.status==1){
+				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+			} else if(data.status==0){
+				dataHash[selectArticleId].tags.forEach(function(item,i){
+					if(item.tag_id==tagId){
+						dataHash[selectArticleId].tags.splice(i,1);return false;
+					}
+				});
+			}
 		});
 	}
 	$li.remove();
 });
+
+/**
+ * 拖拽上传
+ */
+//阻止浏览器默认行。 
+$(document).on({ 
+    dragleave:function(e){  //拖离 
+        e.preventDefault(); 
+    }, 
+    drop:function(e){  //拖后放 
+        e.preventDefault(); 
+    }, 
+    dragenter:function(e){  //拖进 
+        e.preventDefault(); 
+    }, 
+    dragover:function(e){  //拖来拖去 
+        e.preventDefault(); 
+    } 
+}); 
+$('.CodeMirror-code')[0].addEventListener("drop",function(e){ 
+    e.preventDefault(); //取消默认浏览器拖拽效果 
+    if(!(e.dataTransfer&&e.dataTransfer.files)){
+    	showError("浏览器不支持拖拽上传");
+    	return false;
+    }
+    var files = e.dataTransfer.files; //获取文件对象 
+    //检测是否是拖拽文件到页面的操作 
+    if(files.length == 0){return false; }
+    //检测文件是不是图片 
+    if(files[0].type.indexOf('image') === -1){ 
+        alert("您拖的不是图片！"); 
+        return false; 
+    } 
+     
+    //拖拉图片到浏览器，可以实现预览功能 
+    // var url = window.URL.createObjectURL(files[0]); 
+    var fileName = files[0].name; //图片名称 
+    var sname=fileName.substr(0,fileName.lastIndexOf('.'));
+    var fileSize = Math.floor((files[0].size)/1024);  
+    if(fileSize>500){ 
+        showError("上传大小不能超过500K."); 
+        return false; 
+    }
+
+	var startPoint = codeMirror.getCursor("start");
+	var endPoint = codeMirror.getCursor("end");
+	var text = codeMirror.getLine(startPoint.line);
+	var start = text.slice(0, startPoint.ch);
+	var end = text.slice(startPoint.ch);
+	var insert='!['+sname+'](http://)';
+	startPoint.ch+=2;
+	endPoint.ch+=sname.length;
+	replaceRange(insert);
+
+	if(!window.FileReader) {
+		showError("浏览器不支持上传");
+		return false;
+	}
+	var fr = new FileReader();
+	//加载完成后显示图片
+	fr.onloadend=function(e){
+		$.post('/uploadFile',{data:e.target.result,name:fileName}).done(function(data){
+			console.log(data);
+			insert='!['+sname+']('+location.origin+data.src+')';
+			replaceRange(insert);
+		});
+	};
+    fr.readAsBinaryString(files[0]);
+
+	function replaceRange(txt){
+		codeMirror.replaceRange(start +txt+ end, {
+			line: startPoint.line,
+			ch: 0
+		}, {
+			line: startPoint.line,
+			ch: 99999999999999
+		});
+
+		codeMirror.setSelection(startPoint, endPoint);
+		codeMirror.focus();
+	}
+},false); 
+

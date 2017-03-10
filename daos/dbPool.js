@@ -3,7 +3,7 @@
  */
 const mysql = require('mysql');
 const dbconfig = require('../config/db');
-// const logger =require('../log').logger;
+const log=require('../logger').logger();
 let pool = null;
 
 /**
@@ -11,15 +11,16 @@ let pool = null;
  * @param cbk
  */
 exports.getConnection = function(cbk){
+    log.info('=== dbPool ===');
     if(!pool){
-        // logger.info("创建数据库连接池");
+        log.info("创建数据库连接池");
         pool = mysql.createPool(dbconfig);
     }
 
     pool.getConnection(function(err, connection){
         //获取数据库连接出错
         if(err||!connection){
-            // logger.error("获取数据库连接失败："+err.code);
+            log.error("获取数据库连接失败："+err.code);
             throw err;
         }
         cbk(connection);
@@ -32,7 +33,7 @@ exports.getConnection = function(cbk){
  */
 exports.getPool = function(){
     if(!pool){
-        // logger.info("创建数据库连接池");
+        log.info("创建数据库连接池");
         pool = mysql.createPool(dbconfig);
     }
 

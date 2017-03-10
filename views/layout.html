@@ -45,6 +45,50 @@
 		</div>
 	{% include "parts/footer.html" ignore missing %}
 	<script src="/lib/jquery-2.2.3.min.js"></script>
+	<script>
+		var ReadMode=sessionStorage.getItem('readMode')||'',
+			$body=$(document.body),
+			$modeElem=$('#readMode');
+
+		function setReadMode(isNight){
+			$modeElem.find('.active').removeClass('active');
+			if(isNight){
+				ReadMode='1';
+				$body.addClass('night');
+				$modeElem.find('.moon').addClass('active');
+			} else {
+				ReadMode='';
+				$body.removeClass('night');
+				$modeElem.find('.sun').addClass('active');
+			}
+		}
+
+		$modeElem.on('click','a',function(){
+			setReadMode($(this).index());
+			sessionStorage.setItem('readMode',ReadMode);
+		});
+
+		setReadMode(ReadMode);
+
+		$('#bars').on('click',function(e){
+			var menu=$('.panel-set'),
+				icon=$(this).find('i');
+
+			if(icon.hasClass('fa-bars')){
+				icon.addClass('fa-close').removeClass('fa-bars');
+				menu.addClass('show');
+				setTimeout(function() {
+					menu.removeClass('show').css('top','30px');
+				}, 500);
+			} else {
+				icon.addClass('fa-bars').removeClass('fa-close');
+				menu.addClass('hide');
+				setTimeout(function() {
+					menu.removeClass('hide').css('top','-120px');
+				}, 500);
+			}		
+		});
+	</script>
 	{% block js %}{% endblock %}
 	</body>
 	</html>

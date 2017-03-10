@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block title %}首页-MySpace{% endblock %}
 {% block content %}
+<nav class="bread"><a href="javascript:;">首页</a></nav>
 <div class="article-list">
 	{% for article in list %} 
 	<article>
@@ -14,11 +15,11 @@
 	<nav class="pages">
 		{% if listInfo %}
 		{% if listInfo.index>1 %}
-		<a href="/page/{{listInfo.index-1}}"> <i class="fa fa-long-arrow-left"></i> Prev Page</a>
+		<a href="/page/{{listInfo.index-1}}"> <i class="fa fa-long-arrow-left"></i> Prev </a>
 		{% endif%}
 		<span>Page {{listInfo.index}} of {{listInfo.pages}} | total {{listInfo.total}}</span>
 		{% if listInfo.index<listInfo.pages %}
-		<a href="/page/{{listInfo.index+1}}">Next Page <i class="fa fa-long-arrow-right"></i> </a>
+		<a href="/page/{{listInfo.index+1}}"> Next <i class="fa fa-long-arrow-right"></i> </a>
 		{% endif%}
 		{% endif%}
 	</nav>

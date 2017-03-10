@@ -3,6 +3,7 @@ const tagDao=require('../daos/tag');
 const util=require('../common/util');
 const marked = require('marked');
 const hl=require('highlight.js');
+const log=require('../logger').logger();
 
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -12,6 +13,12 @@ marked.setOptions({
   highlight:function(code){return hl.highlightAuto(code).value; }
 });
 
+/**
+ * 编辑器页面
+ * @param  {[type]}   ctx  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.writer=async function(ctx,next){
 	if(!ctx.session||!ctx.session.user){
 		return ctx.redirect('/signIn?returnUrl=/writer');
@@ -27,6 +34,12 @@ exports.writer=async function(ctx,next){
 	ctx.body = await ctx.render('writer',{tags:tags});
 };
 
+/**
+ * 删除标签
+ * @param  {[type]}   ctx  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.deleteTag=async function(ctx,next){
 	if(!ctx.session||!ctx.session.user){
 		ctx.body=await {
@@ -35,20 +48,36 @@ exports.deleteTag=async function(ctx,next){
 		};
 		return;
 	}
-	let form=ctx.query,
-		user=ctx.session.user,
-		tagRet;
-	if(form.isDeleteTag==1){
-		tagRet=await tagDao.deleteTag(form.tagId);
+	try{
+		let form=ctx.query,
+			user=ctx.session.user,
+			tagRet;
+		if(form.isDeleteTag==1){
+			tagRet=await tagDao.deleteTag(form.tagId);
+		}
+		let ret=await tagDao.deleteTagArticle([user.id,form.articleId,form.tagId]);
+		ctx.body=await {
+			status:0,
+			tagId:form.tagId,
+			msg:'删除标签成功'
+		};
+	} catch(err){
+		log.error(err);
+		ctx.body=await{
+			status:-1,
+			error:err,
+			msg:'系统错误'
+		};
 	}
-	let ret=await tagDao.deleteTagArticle([user.id,form.articleId,form.tagId]);
-	ctx.body=await {
-		status:0,
-		tagId:form.tagId,
-		msg:'删除标签成功'
-	};
+
 };
 
+/**
+ * 增加标签
+ * @param  {[type]}   ctx  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 exports.addTag=async function(ctx,next){
 	if(!ctx.session||!ctx.session.user){
 		ctx.body=await {
@@ -57,18 +86,28 @@ exports.addTag=async function(ctx,next){
 		};
 		return;
 	}
-	let form=ctx.query,
-		user=ctx.session.user,
-		tagRet;
+	try{
+		let form=ctx.query,
+			user=ctx.session.user,
+			tagRet;
 
-	if(form.tagId==0){
-		tagRet=await tagDao.addTag(form.name);
-		form.tagId=tagRet.insertId;
+		if(form.tagId==0){
+			tagRet=await tagDao.addTag(form.name);
+			form.tagId=tagRet.insertId;
+		}
+		let ret=await tagDao.addTagArticle([user.id,form.articleId,form.tagId]);
+		ctx.body=await {
+			status:0,
+			tagId:form.tagId,
+			msg:'添加标签成功'
+		}
+	} catch(err){
+		log.error(err);
+		ctx.body=await{
+			status:-1,
+			error:err,
+			msg:'系统错误'
+		};
 	}
-	let ret=await tagDao.addTagArticle([user.id,form.articleId,form.tagId]);
-	ctx.body=await {
-		status:0,
-		tagId:form.tagId,
-		msg:'添加标签成功'
-	}
+
 };

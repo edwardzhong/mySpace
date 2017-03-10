@@ -3,6 +3,7 @@ const tagDao=require('../daos/tag');
 const util=require('../common/util');
 const marked = require('marked');
 const hl=require('highlight.js');
+const log=require('../logger').logger();
 
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -25,10 +26,17 @@ exports.index=async function (ctx,next){
 		pages:0,
 		total:0
 	};
-	//调用分页存储过程
-	let [rows,effects]= await articleDao.query(`call getpage('article','is_publish=1 and is_delete=0 order by id desc',${listInfo.index},${listInfo.size},@pages,@total)`);
-	if(rows.length){await processRows(rows,listInfo); }
-	ctx.body=await ctx.render('index',{list:rows,listInfo:listInfo});
+	try{
+		//调用分页存储过程
+		let [rows,effects]= await articleDao.query(`call getpage('article','is_publish=1 and is_delete=0 order by id desc',${listInfo.index},${listInfo.size},@pages,@total)`);
+		if(rows.length){await processRows(rows,listInfo); }
+		ctx.body=await ctx.render('index',{list:rows,listInfo:listInfo,isLogin:ctx.session&&ctx.session.user});
+	} catch(err){
+		log.error(err);
+        ctx.status = 500;
+        ctx.statusText = 'Internal Server Error';
+        ctx.res.end(err.message);
+	}
 };
 
 /**
@@ -47,9 +55,17 @@ exports.tag=async function(ctx,next){
 		total:0
 	};
 	if(!listInfo.id) return;
-	let [rows,effects]= await articleDao.query(`call getpage('article a join tag_article b on a.id=b.article_id','b.tag_id=${listInfo.id} and a.is_publish=1 and is_delete=0 order by a.id desc',${listInfo.index},${listInfo.size},@pages,@total)`);
-	if(rows.length){await processRows(rows,listInfo); }
-	ctx.body=await ctx.render('tag',{list:rows,listInfo:listInfo});
+	try{
+		let [rows,effects]= await articleDao.query(`call getpage('article a join tag_article b on a.id=b.article_id','b.tag_id=${listInfo.id} and a.is_publish=1 and a.is_delete=0 order by a.id desc',${listInfo.index},${listInfo.size},@pages,@total)`);
+		if(rows.length){await processRows(rows,listInfo); }
+		ctx.body=await ctx.render('tag',{list:rows,listInfo:listInfo,isLogin:ctx.session&&ctx.session.user});
+	} catch(err){
+		log.error(err);
+        ctx.status = 500;
+        ctx.statusText = 'Internal Server Error';
+        ctx.res.end(err.message);
+	}
+
 };
 
 /**
@@ -58,7 +74,8 @@ exports.tag=async function(ctx,next){
  * @return {[type]}      [description]
  */
 async function processRows(rows,listInfo){
-	let [pageInfo]=await articleDao.query(`select @pages as pages,@total as total`);
+	await articleDao.query('select @pages as pages,@total as total');
+	let [pageInfo]=await articleDao.query('select @pages as pages,@total as total');
 	Object.assign(listInfo,pageInfo);//类似 JQ 的 extend 用法
 	let ids=rows.map(row=>row.id);
 	let tags=await tagDao.getTagsByArticleId(ids.join(','));

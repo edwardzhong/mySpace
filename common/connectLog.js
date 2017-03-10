@@ -1,10 +1,9 @@
 /**
  * Module dependencies.
  */
-
 var Counter = require('passthrough-counter');
 var bytes = require('bytes');
-var chalk = require('chalk');
+var log = require('../logger').conectLog()
 
 /**
  * TTY check for dev format.
@@ -39,17 +38,13 @@ function dev(opts) {
   return function *logger(next) {
     // request
     var start = new Date;
-    console.log('  ' + chalk.gray('<--')
-      + ' ' + chalk.bold('%s')
-      + ' ' + chalk.gray('%s'),
-        this.method,
-        this.originalUrl);
+    log.info('  <-- %s %s', this.method, this.originalUrl);
 
     try {
       yield next;
     } catch (err) {
       // log uncaught downstream errors
-      log(this, start, null, err);
+      logFn(this, start, null, err);
       throw err;
     }
 
@@ -79,7 +74,7 @@ function dev(opts) {
     function done(event){
       res.removeListener('finish', onfinish);
       res.removeListener('close', onclose);
-      log(ctx, start, counter ? counter.length : length, null, event);
+      logFn(ctx, start, counter ? counter.length : length, null, event);
     }
   }
 }
@@ -88,7 +83,7 @@ function dev(opts) {
  * Log helper.
  */
 
-function log(ctx, start, len, err, event) {
+function logFn(ctx, start, len, err, event) {
   // get the status code of the response
   var status = err
     ? (err.status || 500)
@@ -108,16 +103,10 @@ function log(ctx, start, len, err, event) {
     length = bytes(len);
   }
 
-  var upstream = err ? chalk.red('xxx')
-    : event === 'close' ? chalk.yellow('-x-')
-    : chalk.gray('-->')
+  var upstream = err ? 'xxx': event === 'close' ? '-x-': '-->';
 
-  console.log('  ' + upstream
-    + ' ' + chalk.bold('%s')
-    + ' ' + chalk.gray('%s')
-    + ' ' + chalk[color]('%s')
-    + ' ' + chalk.gray('%s')
-    + ' ' + chalk.gray('%s'),
+  log.info('  %s %s %s %s %s %s',
+      upstream,
       ctx.method,
       ctx.originalUrl,
       status,
