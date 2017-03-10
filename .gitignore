@@ -1,4 +1,9 @@
-.DS_Store
+
+build/Release
 node_modules
+public/upload
 logs
-public
+*.log
+.DS_Store
+.npm
+.node_repl_history
