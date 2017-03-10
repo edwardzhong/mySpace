@@ -21,7 +21,7 @@ marked.setOptions({
  */
 exports.writer=async function(ctx,next){
 	if(!ctx.session||!ctx.session.user){
-		return ctx.redirect('/signIn?returnUrl=/writer');
+		return ctx.redirect('/sign?returnUrl='+decodeURIComponent('/writer'));
 	}
 	let user_id=ctx.session.user.id;
 	let tags=await tagDao.getTagsByUser(user_id);

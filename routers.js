@@ -16,11 +16,8 @@ module.exports=function(router){
 		.get('/tool',async (ctx,next)=>{
 			ctx.body = await ctx.render('tool',{title:'tool'});
 		})
-		.get('/signIn',async ctx=>{
-			ctx.body= await ctx.render('signIn');
-		})
-		.get('/signUp',async ctx=>{
-			ctx.body= await ctx.render('signUp');
+		.get('/sign',async ctx=>{
+			ctx.body= await ctx.render('sign');
 		})
 		.get('/writer',writerCtr.writer)
 		.post('/uploadFile',fileCtr.uploadFile)

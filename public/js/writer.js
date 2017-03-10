@@ -161,7 +161,7 @@ $('.tArticle-list').on('click','li',function(e){
 $('#recover').on('click',function(e){
 	$.get('/delete?_t='+Math.random(),{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
 		if(data.status==1){
-			location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+			redirectLogin();
 		} else if(data.status==0){
 			trashDeleteFn(data);
 		}
@@ -174,7 +174,7 @@ $('#rDelete').on('click',function(e){
 		var dialog=this;
 		$.get('/realDelete',{id:selectArticleId}).done(function(data){
 			if(data.status==1){
-				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+				redirectLogin();
 			} else if(data.status==0){
 				trashDeleteFn(data,true);
 				dialog.remove();
@@ -232,6 +232,9 @@ function showCommonDialog(txt,fn){
 		this.remove();
 	},fn);
 }
+function redirectLogin(){
+	location.href='/sign?returnUrl='+encodeURIComponent(location.pathname+location.search+location.hash);
+}
 	/***************************
     			初始化
     ****************************/
@@ -244,7 +247,7 @@ function showCommonDialog(txt,fn){
     function getDatas(params,cb){
     	$.get('/getUserArticles?_t='+Math.random(),params).done(function(data){
 			if(data.status==1){
-				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+				redirectLogin();
 			} else if(data.status==0){
 				cb(data.list);
 			}
@@ -376,7 +379,7 @@ function showCommonDialog(txt,fn){
     	if(!dataHash[selectArticleId].is_save){saveFn(); }
     	$.get('/publish',{articleId:selectArticleId,isPublish:dataHash[selectArticleId].is_publish}).done(function(data){
     		if(data.status==1){
-				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+				redirectLogin();
 			} else if(data.status==0){
 	    		dataHash[selectArticleId].is_publish=data.isPublish;
 	    		setPublishStatus(dataHash[selectArticleId]);
@@ -391,7 +394,7 @@ function showCommonDialog(txt,fn){
     	$.get('/delete?_t='+Math.random(),{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
     		$('#articleMenu').hide();
     		if(data.status==1){
-    			location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+    			redirectLogin();
     		} else if(data.status==0){
     			dataHash[selectArticleId].is_delete=data.isDelete;
     			var $elem=$('.article-list').find('[data-articleId='+selectArticleId+']'),
@@ -407,7 +410,7 @@ function showCommonDialog(txt,fn){
     	dataHash[selectArticleId].is_save=true;
     	$.post('/saveArticle?_t='+Math.random(),{title:$('#title').val(),content:dataHash[selectArticleId].content,articleId:selectArticleId}).done(function(data){
     		if(data.status==1){
-    			location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+    			redirectLogin();
     		} else if(data.status==0){
     			$('#loading').hide();
     			cb&&cb(data);
@@ -436,7 +439,7 @@ function showCommonDialog(txt,fn){
 
 		$.get('/createNew?_t='+Math.random()).done(function(data){
 			if(data.status==1){
-				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+				redirectLogin();
 			} else if(data.status==0){
 				var article={
 		    		id:data.insert_id,
@@ -537,7 +540,7 @@ function showCommonDialog(txt,fn){
     	if(!article){
     		$.get('/getArticle',{id:id}).done(function(data){
     			if(data.status==1){
-    				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+    				redirectLogin();
     			} else if(data.status==0){
     				article=data.article;
     				setArticle(article);
@@ -750,7 +753,7 @@ Tag.prototype={
 		}
 		$.get('/addTag',{name:val,articleId:selectArticleId,tagId:obj.id}).done(function(data){
 			if(data.status==1){
-				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+				redirectLogin();
 			} else if(data.status==0){
 				Tags[val].id=data.tagId;
 				$('.input').before(`<li data-id="${data.tagId}" data-name="${val}">${val} <i class="fa fa-remove"></i></li>`);
@@ -782,7 +785,7 @@ $('#tagList').on('click','i',function(){
 		}
 		$.get('/deleteTag?_t='+Math.random(),{articleId:selectArticleId,tagId:tagId,isDeleteTag:isDeleteTag}).done(function(data){
 			if(data.status==1){
-				location.href='/signIn?returnUrl='+location.pathname+location.search+location.hash;
+				redirectLogin();
 			} else if(data.status==0){
 				dataHash[selectArticleId].tags.forEach(function(item,i){
 					if(item.tag_id==tagId){
