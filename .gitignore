@@ -1,9 +1,8 @@
-
 build/Release
 node_modules
 public/upload
 logs
-*.log
+public*.log
 .DS_Store
 .npm
 .node_repl_history
