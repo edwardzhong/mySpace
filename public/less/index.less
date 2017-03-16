@@ -10,7 +10,7 @@
 
 @blue:#3194d0;
 @deepBlue:hsl(210, 29%, 33%);
-@green:#4cae4c;
+@green:hsl(120, 40%, 45%);
 @teal:#46b8da;
 @yellow:#eea236;
 @red:#d43f3a;
@@ -418,15 +418,145 @@ footer{
             margin: 0.5rem 1rem;
         }
     }
+    .comment{
+            width: 100%;
+            max-width: 800px;
+        h4{
+            margin: 2rem -0px;
+            padding: 10px;
+            border-bottom: 1px solid hsl(0,0,90%);
+        }
+        .editer{
+            width: 100%;    
+            max-width: 600px;
+            margin-top: 10px;
+        }
+        .nick-input{
+            box-sizing: border-box;
+            margin: 10px 0;
+            padding: 6px 10px;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 4px;
+            border:1px solid @gray;
+            &:focus{
+                border-color: @blue;
+                // box-shadow: 0 0 2px 0 @blue;
+            }
+        }
+        textarea{
+            box-sizing: border-box;
+            border-radius: 4px;
+            border:1px solid @gray;
+            width: 100%;
+            height: 60px;
+            padding: 10px;
+            font-size: 0.8rem;
+            &:focus{
+                border-color: @blue;
+                // box-shadow: 0 0 2px 0 @blue;
+            }
+        }
+        .comment-actions{
+            display: none;
+            padding: 5px 0;
+            text-align: right;
+            a{
+                display: inline-block;
+                padding: 5px 20px;
+                font-size: 0.9rem;
+                color: @gray2;
+                &:hover{
+                    color:@gray3;
+                }
+            }
+        }
+        .cancel-btn{
+
+        }
+        .post-btn{
+            border: 1px solid @gray;
+            border-radius: 5px;
+            &:hover{
+                border-color: @gray2;
+            }
+        }
+        .comment-list{
+            max-width: 600px;
+            margin-top: 20px;
+            li{
+                overflow: hidden;
+                margin-bottom: 20px;
+                &>i{
+                    float: left;
+                    font-size: 1.6rem;
+                    color: @gray;
+                }
+                .com-content{
+                    margin-left: 40px;
+                }
+            }
+            h5{
+                margin: 0 0 10px 0; 
+                font-weight: bold;
+                font-size: 1rem;
+            }
+            p{
+                margin: 10px 0;
+                font-size: 0.9rem;
+                color: @gray3;
+            }
+            .comment-actions{
+                display: block;
+            }
+            .sub-list a{
+                color: @blue;
+            }
+        }
+        .com-footer{
+            font-size: 0.8rem;
+            color: @gray2;
+            cursor: pointer;
+            span{
+                display: none;
+            }
+            i{
+                font-size:inherit;
+                color: inherit;
+                &:hover{
+                    color: @gray3;
+                }
+            }
+        }
+    }
 }
     // sign
     .sign{
         width: 100%;
         height: 100%;
         text-align: center;
-        background: hsl(0,0,95%);
+        // background: hsl(0,0,70%);
         // .gradient(top,hsl(0,0,95%),hsl(0,0,5%));
         // box-shadow: inset 0 100px 100px hsl(0,0,50%),inset 0 200px 100px hsl(0,0,40%),inset 0 -200px 200px hsl(0,0,20%);
+        &::before{
+            content:'';
+            display: block;
+            width: 100%;
+            height: 100%;
+            // z-index: -1;
+             .gradient(top,hsl(0,0,95%),hsl(0,0,5%));
+            background:url(/img/bg3.jpg) no-repeat;
+            background-position: center top;
+            background-size: cover;
+            background-attachment: fixed;
+            opacity: 0.9;
+            filter: alpha(opacity=90);
+            -webkit-filter: blur(5px);//毛玻璃效果
+            -moz-filter: blur(5px);
+            -ms-filter: blur(5px);
+            -o-filter: blur(5px);
+            filter: blur(5px);   
+        }
         .main{
             position: absolute;
             top: 0;
@@ -441,31 +571,68 @@ footer{
             height: 300px;
             margin: auto;
             text-align: center;
-            background: hsla(0,0,100%,.8);
-            border-radius: 5px;
-            box-shadow: 0 1px 3px hsla(0,0,0,.5),0 1px 6px hsla(0, 0, 100%, .3);
+            background: hsla(0,0,100%,.4);
+            border-radius: 6px;
+            border-bottom:1px solid hsl(0,0,70%);  
+            box-shadow: 0 1px 10px hsl(0,0,5%),0 1px 1px hsl(0,0,0);
             vertical-align: middle;
-            overflow: hidden;
             
             h3{
                 margin: 0;
                 padding: 0;
                 height: 70px;
                 line-height: 70px;
-                background: @deepBlue;
+                .gradient(top,hsla(0,0,60%,.5),hsl(0,0,20%,.5));
+                box-shadow:inset 0 1px 0 hsla(0,0,100%,.2);
                 font-size: 1.3rem;
                 color: @white;
                 text-shadow:0 1px 1px hsla(0,0,0,.4);
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+                border-top: 1px solid hsl(0, 0%, 80%);
+            }
+            button{
+                padding: 5px;
+                margin: 20px 0;
+                border-radius: 5px;
+                font-size: 1.1rem;
+                text-shadow:0 1px 1px hsla(0,0,0,.4);
+                &.login-btn{
+                    background-color: @blue;
+                    box-shadow: 0 1px 2px -1px darken(@blue,20%),0 1px 2px 0 lighten(@blue,10%);
+                    border-bottom:1px solid darken(@blue,10%); 
+                    &:hover{
+                        background-color: lighten(@blue,5%);
+                    }
+                }
+
+                &.register-btn{
+                    background-color: @green;
+                    box-shadow: 0 1px 2px -1px darken(@green,20%),0 1px 2px 0 lighten(@green,10%);
+                    border-bottom:1px solid darken(@green,10%); 
+                    &:hover{
+                        background-color: lighten(@green,5%);
+                    }
+                }
+
+                &:active{
+                    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+                }
             }
             .link{
-                padding: 12px;
-                text-align: right;
+                padding: 10px 20px;
+                text-align: justify;
                 a{
-                    font-size: 0.8rem;
-                    color: hsl(0,0,40%);
+                    display: inline-block;
+                    font-size: 0.9rem;
+                    color: @deepBlue;
                     cursor: pointer;
+                    &:last-child{
+                        float: right;
+                    }
+
                     &:hover{
-                        color: darken(@deepBlue,10%);
+                        color: darken(@deepBlue,20%);
                     }
                 }
             }
@@ -503,23 +670,6 @@ footer{
                 }   
             }
 
-            button{
-                padding: 5px;
-                margin: 20px 0;
-                border-radius: 5px;
-                background-color: @deepBlue;
-                box-shadow: 0 1px 2px -1px lighten(@deepBlue,20%);
-                border:1px solid hsla(0, 0%, 0%, 0);
-                border-bottom-color: darken(@deepBlue,5%);
-                font-size: 1.1rem;
-                text-shadow:0 1px 1px hsla(0,0,0,.4);
-                &:hover{
-                    background-color: lighten(@deepBlue,5%);
-                }
-                &:active{
-                    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
-                }
-            }
         }
     }
 // 后台编辑
@@ -1196,7 +1346,16 @@ footer{
 }
 
 @media(max-width:641px){
-    .sign .main{
+    .sign{
         width: 100%;
+        .main{
+            bottom: auto;
+            width: 100%;
+            border-radius: 0;
+            h3{
+                border-radius: 0;
+            }
+        }
     }
 }
+

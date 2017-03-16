@@ -1,6 +1,6 @@
 const userDao=require('../daos/user');
 const crypto=require('crypto');
-const log=require('../logger').logger();
+const log=require('../common/logger').logger();
 
 /**
  * 登录

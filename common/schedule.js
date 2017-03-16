@@ -1,6 +1,6 @@
 const schedule = require('node-schedule');
-const toolDao=require('./daos/tool');
-const config = require('./config/app');
+const toolDao=require('../daos/tool');
+const config = require('../config/app');
 const log=require('./logger').logger();
 
 /**

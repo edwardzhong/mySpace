@@ -11,8 +11,8 @@ const addRouters = require('./routers');
 const appConfig = require('./config/app');
 const favicon = require('koa-favicon');
 const cluster = require('cluster');
-const schedule = require('./schedule');
-const log=require('./logger').logger();
+const schedule = require('./common/schedule');
+const log=require('./common/logger').logger();
 const connectLog= require('./common/connectLog');
 
 // 定时任务，只在主进程执行
@@ -42,12 +42,12 @@ app.use(koaBody({
 
 // 设置静态目录
 app.use(server(__dirname + '/public'));
-
+// favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // 设置模版引擎
 app.context.render = co.wrap(render({
-    root: __dirname + '/views',
+    root: __dirname + (appConfig.env === 'dev'?'/views':'/dist_views'),
     cache: false, // disable, set to false
     autoescape: false,
     ext: 'html',

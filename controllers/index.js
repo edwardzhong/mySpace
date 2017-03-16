@@ -3,7 +3,7 @@ const tagDao=require('../daos/tag');
 const util=require('../common/util');
 const marked = require('marked');
 const hl=require('highlight.js');
-const log=require('../logger').logger();
+const log=require('../common/logger').logger();
 
 marked.setOptions({
   renderer: new marked.Renderer(),

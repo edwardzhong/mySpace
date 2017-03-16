@@ -1,7 +1,7 @@
 const log4js = require('log4js');
-const path = require('path');
+const config = require('../config/log4js');
 
-log4js.configure(path.join("config/log4js.json"));
+log4js.configure(config);
 
 let levels = {
     'trace': log4js.levels.TRACE,

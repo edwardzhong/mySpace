@@ -1,6 +1,6 @@
 const articleDao=require('../daos/article');
 const util=require('../common/util');
-const log=require('../logger').logger();
+const log=require('../common/logger').logger();
 const fs=require('fs');
 
 /**
@@ -51,11 +51,10 @@ exports.downloadFile=async function(ctx,next){
 		ctx.status = 200;
 		ctx.res.setHeader('Content-disposition', 'attachment; filename=' + article.title+'.md');
   		ctx.res.write(article.content);
-  		ctx.res.end();
 	} catch(err){
 		log.error(err);
 		ctx.res.setHeader('Content-disposition', 'attachment; filename=error.md');
   		ctx.res.write(err.message);
-  		ctx.res.end();
 	}
+	ctx.res.end();
 }

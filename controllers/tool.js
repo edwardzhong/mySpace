@@ -1,5 +1,5 @@
-const toolDao=require('../daos/tool');
-const log=require('../logger').logger();
+// const toolDao=require('../daos/tool');
+const log=require('../common/logger').logger();
 
 /**
  * 执行sql语句

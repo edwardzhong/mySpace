@@ -142,6 +142,7 @@ function soFarDateString(ints){
 		return division+'秒前'
 		// ret+=division+'秒前';
 	}
+	return '刚刚';
 	// return ret;
 }
 

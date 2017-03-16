@@ -3,7 +3,7 @@
  */
 const mysql = require('mysql');
 const dbconfig = require('../config/db');
-const log=require('../logger').logger();
+const log=require('../common/logger').logger();
 let pool = null;
 
 /**

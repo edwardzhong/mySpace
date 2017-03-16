@@ -8,4 +8,20 @@
 	<ul class="tags">{% for tag in article.tags %}<li><a href="/tag/{{tag.id}}/1">{{tag.name}}</a></li>{% endfor %}</ul>
 	<section class="article-content">{{article.content}}</section>
 </article>
+<input id="articleId" type="hidden" name="articleId" value="{{article.id}}">
+<div class="comment">
+	<h4 id="listNum">0条评论</h4>
+	<div id="mainEditer" class="editer">
+		<input class="nick-input" type="text" placeholder="你的昵称">
+		<textarea name="comment" cols="80" rows="3" placeholder="写下你的评论"></textarea>
+		<div class="comment-actions">
+			<a data-tag="cancel" class="cancel-btn" href="javascript:;">取消</a>
+			<a data-tag="post" class="post-btn" href="javascript:;">评论</a>
+		</div>
+	</div>
+	<ul id="commentList" class="comment-list"></ul>
+</div>
 {% endblock %}
+{% block js %}
+<script src="/js/article.js"></script>
+{% endblock%}

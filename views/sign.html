@@ -13,6 +13,7 @@
 	<title>登录/注册-MySpace</title>
 	<link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css">
 	<link rel="stylesheet" href="/lib/highlight/styles/github.css">
+    <link rel="stylesheet" href="/css/index.css">
 	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
 	<script src="/lib/less.min.js"></script>
 </head>
@@ -23,10 +24,11 @@
     		<div class="control-wrap">
     			<div class="input-control"><i class="fa fa-envelope"></i><input type="text" name="email" id="email" placeholder="邮箱"></div>
     			<div class="input-control"><i class="fa fa-lock"></i><input type="password" name="password" id="password" placeholder="密码"></div>
-    			<button class="sign-btn" id="login">登 录</button>
+    			<button class="login-btn" id="login">登 录</button>
     		</div>
     		<div class="link">
-    			<a href="#register"><i class="fa fa-mail-forward"></i> <span>注 册</span></a>
+    			<a href="/"><i class="fa fa-home"></i> 主页</a>
+    			<a href="#register"><i class="fa fa-mail-forward"></i> <span>注册</span></a>
     		</div>
     	</div><div>
     		<h3>注 册</h3>
@@ -34,112 +36,15 @@
     			<div class="input-control"><i class="fa fa-user"></i><input type="text" name="rName" id="rName" placeholder="昵称"></div>
     			<div class="input-control"><i class="fa fa-envelope"></i><input type="text" name="rEmail" id="rEmail" placeholder="邮箱"></div>
     			<div class="input-control"><i class="fa fa-lock"></i><input type="password" name="rPassword" id="rPassword" placeholder="密码"></div>
-    			<button class="sign-btn" id="register">注 册</button>
+    			<button class="register-btn" id="register">注 册</button>
     		</div>
     		<div class="link">
-    			<a href="#login"><i class="fa fa-mail-forward"></i> <span>登 录</span></a>
+    			<a href="/"><i class="fa fa-home"></i> 主页</a>
+    			<a href="#login"><i class="fa fa-mail-forward"></i> <span>登录</span></a>
     		</div>
     	</div></div>
 </div>
 <script src="/lib/jquery-2.2.3.min.js"></script>
-<script>
-	var returnUrl='';
-	var matchs=location.href.match(/returnUrl=([^=?&]+)/);
-	if(matchs){
-		returnUrl=decodeURIComponent(matchs[1]);
-	}
-	$('#login').on('click',async event=>{
-		let email=$('#email').val().trim();
-		let password=$('#password').val().trim();
-		if(!email||!password){
-			alert('值不能为空！');
-			return;
-		}
-		try{
-			let data= await $.post('/login',{email:email,password:password});
-			if(data.status==0){
-				location.href=returnUrl?returnUrl:'/';
-			} else {
-				alert(data.msg);
-			}
-			
-		} catch(err){
-			console.log(err)
-			alert(err.responseText);
-		}
-	});
-	$('#register').on('click', async (event) => {
-	    let [name, email, password] = [$('#rName').val().trim(), $('#rEmail').val().trim(), $('#rPassword').val().trim()];
-	    if (!name || !email || !password) {
-	        alert('值不能为空！');
-	        return;
-	    }
-	    try{
-		    var data = await $.post('/register',{
-		    	name:name,
-		    	email:email,
-		    	password:password
-		    });
-		    if(data.status==0){
-		    	alert('注册成功！');
-		    	location.href='/';
-		    } else {
-		    	alert('注册失败！');
-		    }
-		    
-	    } catch(err){
-	    	console.log(err);
-	    	alert(err.message);
-	    }
-	});
-
-	var $main=$('.main'),
-		divs=$main.children('div'),
-		firstLoad=true;
-	function selectHash(hash){
-		if (location.hash.substr(1) != hash) {//同步hash
-            location.hash = hash;
-            return;
-        }
-        var args=hash.split('/');
-        var actionName=args[0];
-        if (!actionName || !(actionName in Actions)) {
-            selectHash('login');
-        } else {
-            Actions[actionName].apply(this,args);
-            firstLoad=false;
-        }
-	}
-	var Actions={
-		login:function(){
-			if(firstLoad){
-				divs.last().hide();
-				divs.first().show();
-				$main.css({height:'300px'});
-				return;
-			}
-			divs.last().hide().css('opacity','0.3');
-			divs.first().show().animate({opacity:1}, 300);
-			$main.animate({height:'300px'}, 300);
-		},
-		register:function(){
-			if(firstLoad){
-				divs.first().hide();
-				divs.last().show();
-				$main.css({height:'340px'});
-				return;
-			}
-			divs.first().hide().css('opacity','0.3');
-			divs.last().show().animate({opacity:1}, 300);
-			$main.animate({height:'340px'}, 300);
-		}
-	};
-
-	$(window).on('hashchange', function(e) {
-        selectHash(location.hash.replace('#', ''));
-    });
-    selectHash(location.hash.substr(1));
-
-</script>
+<script src="/js/sign.js"></script>
 </body>
 </html>

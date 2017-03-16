@@ -1,5 +1,5 @@
 let pool = require("./dbPool").getPool();
-const log=require('../logger').logger();
+const log=require('../common/logger').logger();
 
 function createMethod(obj) {
     let exportsFn={};

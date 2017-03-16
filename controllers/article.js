@@ -1,9 +1,10 @@
 const articleDao=require('../daos/article');
 const tagDao=require('../daos/tag');
+const commentDao=require('../daos/comment');
 const util=require('../common/util');
 const marked = require('marked');
 const hl=require('highlight.js');
-const log=require('../logger').logger();
+const log=require('../common/logger').logger();
 
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -64,7 +65,7 @@ exports.create=async function(ctx,next){
 		log.error(err);
 		ctx.body=await{
 			status:-1,
-			error:err,
+			err:err,
 			msg:'系统错误'
 		};
 	}
@@ -96,7 +97,7 @@ exports.getArticle=async function(ctx,next){
 		log.error(err);
 		ctx.body=await{
 			status:-1,
-			error:err,
+			err:err,
 			msg:'系统错误'
 		};
 	}
@@ -128,7 +129,7 @@ exports.saveArticle =async function(ctx,next){
 		log.error(err);
 		ctx.body=await{
 			status:-1,
-			error:err,
+			err:err,
 			msg:'系统错误'
 		};
 	}
@@ -152,15 +153,15 @@ exports.getUserArticles=async function(ctx,next){
 		form=ctx.query;
 	try{
 		let tags=await tagDao.getTagsByUser(user.id);
-		let ret=await articleDao.getArticleByUserId([user.id,form.is_delete]);
-		for(let [i,obj] of ret.entries()){
+		let rows=await articleDao.getArticleByUserId([user.id,form.is_delete]);
+		for(let [i,obj] of rows.entries()){
 			obj.tags=tags.filter(tag=>tag.article_id==obj.id);
 			obj.summary=util.getContentSummary(marked,obj.content,20);
 			obj.content=util.htmlDecode(obj.content);
 		}
 		ctx.body=await{
 			status:0,
-			list:ret,
+			list:rows,
 			msg:'获取成功'
 		};
 	} catch(err){
@@ -203,7 +204,7 @@ exports.setPublish=async function(ctx,next){
 	} catch(err){
 		log.error(err);
 		ctx.body=await{
-			status:0,
+			status:-1,
 			isPublish:isPublish,
 			msg:'设置失败',
 			err:err
@@ -240,7 +241,7 @@ exports.setDelete=async function(ctx,next){
 	} catch(err){
 		log.error(err);
 		ctx.body=await{
-			status:0,
+			status:-1,
 			isDelete:isDelete,
 			msg:newDelete==1?'删除失败':'恢复失败',
 			err:err
@@ -275,9 +276,91 @@ exports.realDelete=async function(ctx,next){
 	} catch(err){
 		log.error(err);
 		ctx.body=await {
-			status:0,
+			status:-1,
 			msg:'删除失败',
 			err:err
 		};
 	}
 };
+
+/**
+ * 添加评论
+ * @param  {[type]}   ctx  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
+exports.postComment=async function(ctx,next){
+	let form=ctx.request.body;
+	try{
+		let ret = await commentDao.create(form);
+		form.id=ret.insertId;
+		form.time=util.soFarDateString(new Date().getTime()/1000-1);
+		if(form.reply_id){
+			let [rComment] = await commentDao.getById(form.reply_id);
+			form.reply_nick=rComment.nick;
+		}
+		
+		ctx.body=await{
+			status:0,
+			comment:form,
+			msg:'评论成功'
+		};
+	} catch(err){
+		log.error(err);
+		ctx.body=await {
+			status:-1,
+			msg:'评论失败',
+			err:err
+		};
+	}
+};
+
+/**
+ * 获取评论列表
+ * @param  {[type]}   ctx  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
+exports.getComments=async function(ctx,next){
+	let form=ctx.query;
+	if(!form.id){return;}
+	try{
+		let rows= await commentDao.getByArticleId(form.id);
+		// 构建评论列表
+		let list=[];
+		for (let [i,row] of rows.entries()){
+			row.time=util.soFarDateString(row.create_date);
+			if(!row.reply_id){
+				row.hash={};
+				row.hash[row.id]=true;
+				row.subList=[];
+				list.push(row);
+			} else {
+				let parent= list.filter(li=>li.hash&&li.hash[row.reply_id]);
+				if(parent.length){
+					let prev= rows.filter(li=>li.id==row.reply_id);
+					if(prev.length){
+						row.reply_nick=prev[0].nick;
+					}
+					parent[0].subList.push(row);
+					parent[0].hash[row.id]=true;
+				}
+			}
+		}
+		ctx.body=await {
+			status:0,
+			msg:'获取评论成功',
+			list:list,
+			len:rows.length
+		};
+	} catch(err){
+		log.error(err);
+		ctx.body=await {
+			status:-1,
+			msg:'获取评论失败',
+			err:err
+		};
+	}
+}
+
+

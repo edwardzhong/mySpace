@@ -3,7 +3,7 @@
  */
 var Counter = require('passthrough-counter');
 var bytes = require('bytes');
-var log = require('../logger').conectLog()
+var log = require('./logger').conectLog()
 
 /**
  * TTY check for dev format.
