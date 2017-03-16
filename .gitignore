@@ -4,8 +4,7 @@ public/upload
 public/dist
 public/rev
 logs
-public*.log
-.DS_Store
-.npm
-.node_repl_history
 dist_views
+*.log
+.DS_Store
+
