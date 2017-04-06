@@ -11,12 +11,15 @@ var rename = require('gulp-rename');
 var concatJs = require('gulp-concat');
 var rev = require('gulp-rev');//对文件名加MD5后缀
 var revCollector = require('gulp-rev-collector');  
+var watch = require('gulp-watch');
 var path = require('path');
  
 gulp.task('less', function () {
-  return gulp.src('./public/less/*.less')
+    return watch('./public/less/*.less', function (){//监控到less内容一旦有变化，马上转换为css
+        gulp.src('./public/less/*.less')
     	.pipe(less())
     	.pipe(gulp.dest('./public/css'));
+    });
 });
 
 gulp.task('css', function() {
@@ -24,6 +27,7 @@ gulp.task('css', function() {
     	.pipe(cleanCss())
     	.pipe(concatCss("index.css"))
     	.pipe(postcss([ autoprefixer()]))
+        .pipe(minifyCss())
     	// .pipe(rename({suffix: '.min'}))
     	.pipe(rev())
     	.pipe(gulp.dest('./public/dist/css'))
@@ -42,8 +46,8 @@ gulp.task('js',function(){
         .pipe(gulp.dest('./public/rev/js'));
 });
 
-gulp.task('rev', ["less", "css","js"],function () {
-    return gulp.src(['./public/rev/**/*.json', './views/**/*.html'])
+gulp.task('rev', ["css","js"],function () {
+    return gulp.src(['./public/rev/**/*.json', './views/**/*.html'])//为js和css加md5后缀，更新html里面的链接
         .pipe( revCollector({
             replaceReved: true,
             dirReplacements: {

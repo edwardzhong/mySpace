@@ -1,8 +1,8 @@
 module.exports={
     "appenders": [
-        {
-            "type": "console" 
-        },
+        // {
+        //     "type": "console" 
+        // },
         {
             "type": "dateFile",
             "filename": "logs/",

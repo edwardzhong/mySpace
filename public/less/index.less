@@ -1359,3 +1359,10 @@ footer{
     }
 }
 
+.parent{
+    color: #000;
+}
+.child{
+    &:extend(.parent);
+    padding: 10px;
+}
