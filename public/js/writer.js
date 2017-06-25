@@ -1,3 +1,7 @@
+/**
+ * the file no use any more, had replace by react (folder admin)
+ */
+
 	var simplemde = new SimpleMDE({
 		element: $("#article")[0],
 		autoDownloadFontAwesome:false,
@@ -77,6 +81,7 @@
     		} else {
     			select();
     		}
+    		
 	    	function select(){
 				// if(!id){
 	   //  			li=$('.article-list').find('li').first();
@@ -159,20 +164,37 @@ $('.tArticle-list').on('click','li',function(e){
 	self.find('span').html(article.days+'天后清除');
 });
 $('#recover').on('click',function(e){
-	$.get('/delete?_t='+Math.random(),{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
+	$.ajax({
+		type:'PUT',
+		dataType:'json',
+		url:'/delete?_t='+Math.random(),
+		data:{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}
+	}).done(function(data){
 		if(data.status==1){
 			redirectLogin();
 		} else if(data.status==0){
 			trashDeleteFn(data);
 		}
 	});
+	// $.get('/delete?_t='+Math.random(),{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
+	// 	if(data.status==1){
+	// 		redirectLogin();
+	// 	} else if(data.status==0){
+	// 		trashDeleteFn(data);
+	// 	}
+	// });
 });
 $('#rDelete').on('click',function(e){
 	var article=dataHash[selectArticleId];
 	if(!article) return;
 	showCommonDialog(`确定彻底删除文章《${article.title}》？`,function(){
 		var dialog=this;
-		$.get('/realDelete',{id:selectArticleId}).done(function(data){
+		$.ajax({
+			type:'DELETE',
+			dataType:'json',
+			url:'/realDelete',
+			data:{id:selectArticleId}
+		}).done(function(data){
 			if(data.status==1){
 				redirectLogin();
 			} else if(data.status==0){
@@ -180,6 +202,14 @@ $('#rDelete').on('click',function(e){
 				dialog.remove();
 			}
 		});
+		// $.get('/realDelete',{id:selectArticleId}).done(function(data){
+		// 	if(data.status==1){
+		// 		redirectLogin();
+		// 	} else if(data.status==0){
+		// 		trashDeleteFn(data,true);
+		// 		dialog.remove();
+		// 	}
+		// });
 	});
 });
 
@@ -377,21 +407,42 @@ function redirectLogin(){
 
     function publishFn(){
     	if(!dataHash[selectArticleId].is_save){saveFn(); }
-    	$.get('/publish',{articleId:selectArticleId,isPublish:dataHash[selectArticleId].is_publish}).done(function(data){
+    	$.ajax({
+    		type:'PUT',
+    		dataType:'json',
+    		url:'/publish',
+    		data:{articleId:selectArticleId,isPublish:dataHash[selectArticleId].is_publish}
+    	}).done(function(data){
     		if(data.status==1){
-				redirectLogin();
-			} else if(data.status==0){
-	    		dataHash[selectArticleId].is_publish=data.isPublish;
-	    		setPublishStatus(dataHash[selectArticleId]);
-	    		if(data.isPublish==1){
-	    			$('[data-tag=publish]').attr('class','hover fa fa-remove no-disable').html(' 取消发布');
-	    		}
-			}
+    			redirectLogin();
+    		} else if(data.status==0){
+    			dataHash[selectArticleId].is_publish=data.isPublish;
+    			setPublishStatus(dataHash[selectArticleId]);
+    			if(data.isPublish==1){
+    				$('[data-tag=publish]').attr('class','hover fa fa-remove no-disable').html(' 取消发布');
+    			}
+    		}
     	});
+   //  	$.get('/publish',{articleId:selectArticleId,isPublish:dataHash[selectArticleId].is_publish}).done(function(data){
+   //  		if(data.status==1){
+			// 	redirectLogin();
+			// } else if(data.status==0){
+	  //   		dataHash[selectArticleId].is_publish=data.isPublish;
+	  //   		setPublishStatus(dataHash[selectArticleId]);
+	  //   		if(data.isPublish==1){
+	  //   			$('[data-tag=publish]').attr('class','hover fa fa-remove no-disable').html(' 取消发布');
+	  //   		}
+			// }
+   //  	});
     }
 
     function deleteFn(){
-    	$.get('/delete?_t='+Math.random(),{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
+    	$.ajax({
+    		type:'PUT',
+    		dataType:'json',
+    		url:'/delete?_t='+Math.random(),
+    		data:{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete},
+    	}).done(function(data){
     		$('#articleMenu').hide();
     		if(data.status==1){
     			redirectLogin();
@@ -403,6 +454,18 @@ function redirectLogin(){
     			articleHash(nextId);
     		}
     	});
+    	// $.get('/delete?_t='+Math.random(),{articleId:selectArticleId,isDelete:dataHash[selectArticleId].is_delete}).done(function(data){
+    	// 	$('#articleMenu').hide();
+    	// 	if(data.status==1){
+    	// 		redirectLogin();
+    	// 	} else if(data.status==0){
+    	// 		dataHash[selectArticleId].is_delete=data.isDelete;
+    	// 		var $elem=$('.article-list').find('[data-articleId='+selectArticleId+']'),
+    	// 		nextId=$elem.next().length?$elem.next().attr('data-articleId'):$elem.prev().length?$elem.prev().attr('data-articleId'):-1;
+    	// 		$elem.remove();
+    	// 		articleHash(nextId);
+    	// 	}
+    	// });
     }
 
     function saveFn(cb){
@@ -783,7 +846,12 @@ $('#tagList').on('click','i',function(){
 		} else {
 			obj.tags.splice(obj.tags.indexOf(selectArticleId),1);
 		}
-		$.get('/deleteTag?_t='+Math.random(),{articleId:selectArticleId,tagId:tagId,isDeleteTag:isDeleteTag}).done(function(data){
+		$.ajax({
+			type:'DELETE',
+			url:'/deleteTag?_t='+Math.random(),
+			dateType:'json',
+			data:{ articleId:selectArticleId, tagId:tagId, isDeleteTag:isDeleteTag }
+		}).done(function(data){
 			if(data.status==1){
 				redirectLogin();
 			} else if(data.status==0){
@@ -794,6 +862,17 @@ $('#tagList').on('click','i',function(){
 				});
 			}
 		});
+		// $.get('/deleteTag?_t='+Math.random(),{articleId:selectArticleId,tagId:tagId,isDeleteTag:isDeleteTag}).done(function(data){
+		// 	if(data.status==1){
+		// 		redirectLogin();
+		// 	} else if(data.status==0){
+		// 		dataHash[selectArticleId].tags.forEach(function(item,i){
+		// 			if(item.tag_id==tagId){
+		// 				dataHash[selectArticleId].tags.splice(i,1);return false;
+		// 			}
+		// 		});
+		// 	}
+		// });
 	}
 	$li.remove();
 });
@@ -815,7 +894,8 @@ $(document).on({
     dragover:function(e){  //拖来拖去 
         e.preventDefault(); 
     } 
-}); 
+});
+
 $('.CodeMirror-code')[0].addEventListener("drop",function(e){ 
     e.preventDefault(); //取消默认浏览器拖拽效果 
     if(!(e.dataTransfer&&e.dataTransfer.files)){

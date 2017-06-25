@@ -14,7 +14,8 @@ marked.setOptions({
 });
 
 /**
- * 首页和文章列表(分页)
+ * home and article list(pagination)
+ * 主页和文章列表（分页）
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]
@@ -40,7 +41,8 @@ exports.index=async function (ctx,next){
 };
 
 /**
- * 根据标签获取文章列表(分页)
+ * get article list by tagId(pagination)
+ * 通过标签id获取文章列表（分页）
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]
@@ -56,6 +58,7 @@ exports.tag=async function(ctx,next){
 	};
 	if(!listInfo.id) return;
 	try{
+		// excute mysql procedure
 		let [rows,effects]= await articleDao.query(`call getpage('article a join tag_article b on a.id=b.article_id','b.tag_id=${listInfo.id} and a.is_publish=1 and a.is_delete=0 order by a.id desc',${listInfo.index},${listInfo.size},@pages,@total)`);
 		if(rows.length){await processRows(rows,listInfo); }
 		ctx.body=await ctx.render('tag',{list:rows,listInfo:listInfo,isLogin:ctx.session&&ctx.session.user});
@@ -69,6 +72,7 @@ exports.tag=async function(ctx,next){
 };
 
 /**
+ * process article list:add tags, Conversion time format, add pagination info
  * 处理文章列表：添加标签，转换时间格式，添加分页信息
  * @param  {[type]} rows [description]
  * @return {[type]}      [description]

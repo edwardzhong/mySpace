@@ -1,3 +1,6 @@
+/**
+ * mysql tool page
+ */
 	$('#btn').on('click',async ()=>{
 		let txt=$.trim($('textarea').val());
 		if(!txt){return;}

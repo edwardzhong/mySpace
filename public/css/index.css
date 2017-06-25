@@ -665,7 +665,6 @@ footer .footer-inner a {
   background-color: #3194d0;
 }
 .trash-mode {
-  display: none;
   height: 100%;
 }
 .trash-mode aside {
@@ -770,7 +769,6 @@ footer .footer-inner a {
   display: none;
 }
 .write-mode {
-  display: none;
   width: 100%;
   height: 100%;
   min-width: 1024px;
@@ -843,7 +841,6 @@ footer .footer-inner a {
 }
 .write-mode .aside .notes-list i {
   position: absolute;
-  display: none;
   color: #cccccc;
   top: 10px;
   right: 15px;
@@ -856,7 +853,7 @@ footer .footer-inner a {
   width: 25%;
   min-width: 256px;
   height: 100%;
-  overflow-y: scroll;
+  overflow: hidden;
   border-right: 1px solid #cccccc;
   font-size: 15px;
   color: #4d4d4d;
@@ -865,33 +862,39 @@ footer .footer-inner a {
   display: block;
   padding: 20px;
   color: #4d4d4d;
+  border-bottom: 1px solid #cccccc;
   cursor: pointer;
 }
-.write-mode .middle .article-list li {
+.write-mode .middle .article-list {
+  overflow-y: auto;
+  height: calc(100% - 62px);
+}
+.write-mode .middle .article-list .article-item {
+  display: block;
   height: 80px;
   padding: 20px 20px 0 20px;
-  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
   border-left: 4px solid #ffffff;
   color: #4d4d4d;
   cursor: pointer;
   overflow: hidden;
 }
-.write-mode .middle .article-list li div {
+.write-mode .middle .article-list .article-item div {
   position: relative;
   margin-right: 40px;
 }
-.write-mode .middle .article-list li:hover {
+.write-mode .middle .article-list .article-item:hover {
   border-left: 4px solid #e6e6e6;
   background-color: #e6e6e6;
 }
-.write-mode .middle .article-list li.active {
+.write-mode .middle .article-list .article-item.active {
   border-left: 4px solid #ea6f5a;
   background-color: #e6e6e6;
 }
-.write-mode .middle .article-list li.active .set-article {
+.write-mode .middle .article-list .article-item.active .set-article {
   display: inline-block;
 }
-.write-mode .middle .article-list li.active .word-count {
+.write-mode .middle .article-list .article-item.active .word-count {
   visibility: visible;
 }
 .write-mode .middle .article-list .file-type {
@@ -910,15 +913,6 @@ footer .footer-inner a {
   color: #b3b3b3;
   font-size: 18px;
 }
-.write-mode .middle .article-list a {
-  display: block;
-  height: 20px;
-  padding-left: 40px;
-  color: inherit;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .write-mode .middle .article-list p {
   margin: 0;
   line-height: 25px;
@@ -927,6 +921,13 @@ footer .footer-inner a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.write-mode .middle .article-list .title {
+  font-size: 16px;
+  line-height: 16px;
+  height: 20px;
+  padding-left: 40px;
+  color: inherit;
 }
 .write-mode .middle .article-list .desc {
   padding-left: 40px;
@@ -972,6 +973,14 @@ footer .footer-inner a {
   border-width: 10px;
   border-style: solid;
   border-color: transparent transparent #ffffff transparent;
+}
+.write-mode .middle .menu.arrow-down::before {
+  top: 120px;
+  border-color: #cccccc transparent transparent transparent;
+}
+.write-mode .middle .menu.arrow-down::after {
+  top: 119px;
+  border-color: #ffffff transparent transparent transparent;
 }
 .write-mode .middle .menu li {
   padding: 8px 20px;

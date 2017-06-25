@@ -1,3 +1,6 @@
+/**
+ * page article 
+ */
 	let articleId=$('#articleId').val();
 	let liTpl=(obj)=>`<li data-commentId="${obj.id}">
 						<i class="fa fa-user-circle-o"></i>
@@ -128,3 +131,5 @@
 			}
 		});
 	}
+
+	

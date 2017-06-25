@@ -2,6 +2,7 @@
 const log=require('../common/logger').logger();
 
 /**
+ * excute sql
  * 执行sql语句
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]

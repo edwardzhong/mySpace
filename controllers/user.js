@@ -3,7 +3,7 @@ const crypto=require('crypto');
 const log=require('../common/logger').logger();
 
 /**
- * 登录
+ * user login
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]
@@ -46,7 +46,7 @@ exports.login=async function(ctx,next){
 };
 
 /**
- * 注册
+ * user register
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]
@@ -75,6 +75,7 @@ exports.register=async function(ctx,next){
 };
 
 /**
+ * user logout
  * 注销
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -90,8 +91,8 @@ exports.logout=async function(ctx,next){
 	}
 };
 
-// 生成salt
+// generate	 salt/生成salt
 let makeSalt=()=>Math.round((new Date().valueOf() * Math.random())) + '';
 
-// 生成md5
+// generate md5/生成md5
 let encryptPass=(pass,salt)=>crypto.createHash('md5').update(pass+salt).digest('hex');

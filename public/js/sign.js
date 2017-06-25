@@ -1,3 +1,6 @@
+/**
+ * page sign include login and rigister
+ */
 	let returnUrl='';
 	let matchs=location.href.match(/returnUrl=([^=?&]+)/);
 	if(matchs){
@@ -51,6 +54,7 @@
 	let $main=$('.main'),
 		divs=$main.children('div'),
 		firstLoad=true;
+		
 	function selectHash(hash){
 		if (location.hash.substr(1) != hash) {//同步hash
             location.hash = hash;
@@ -65,6 +69,7 @@
             firstLoad=false;
         }
 	}
+
 	let Actions={
 		login:function(){
 			if(firstLoad){

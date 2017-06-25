@@ -4,7 +4,8 @@ const log=require('../common/logger').logger();
 const fs=require('fs');
 
 /**
- * 图片上传
+ * upload image
+ * 上传图片
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]
@@ -34,7 +35,8 @@ exports.uploadFile=async function(ctx,next){
 };
 
 /**
- * 下载markdown
+ * download markdown file
+ * 下载 markdown
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]

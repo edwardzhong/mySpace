@@ -4,6 +4,7 @@ const config = require('../config/app');
 const log=require('./logger').logger();
 
 /**
+ * Timing task
  * 定时任务
  */
 exports.execute=function(){
@@ -13,6 +14,7 @@ exports.execute=function(){
 }
 
 /**
+ * Clear the status of the recycle article
  * 清除回收站状态的文章（超过一定天数）
  */
 async function checkDelete(){

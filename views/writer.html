@@ -19,72 +19,11 @@
 	<script src="/lib/less.min.js"></script>
  --></head>
 <body>
-<div id="write" class="writer">
-	<div class="write-mode">
-		<aside class="aside">
-		<div class="btn-wrap">
-			<a class="btn" href="/">回首页</a>
-		</div>
-			<a class="add-notes" href="javascript:;"><i class="fa fa-plus"></i> 新建文集</a>
-			<ul class="notes-list">
-				<li class="active"><a href="javascript:;">生活</a><i class="fa fa-gear"></i></li>
-				<li><a href="javascript:;">技术</a><i class="fa fa-gear"></i></li>
-			</ul>
-			<a href="#trash" class="icon"><i class="fa fa-trash-o "></i>	回收站</h3>
-			<a href="#tags" class="icon"><i class="fa fa-tags"></i>	标签</h3>
-		</aside>
-		<div class="middle">
-			<a id="addArticle" href="javascript:;" class="add-article"><i class="fa fa-plus-circle"></i> 新建文章</a>
-			<ul class="article-list"></ul>
-			<!-- <a id="tailAdd" class="tail-add" href="javascript:;"><i class="fa fa-plus"></i> 在下方新建文章</a> -->
-			<div id="articleMenu" class="menu">
-				<ul></ul>
-			</div>
-		</div>
-		<div class="main">
-			<div class="title-wrap">
-				<input class="title" type="text" name="title" id="title" placeholder="这是标题">
-			</div>
-			<div class="tag-wrap">
-				<i class="fa fa-tags"></i>
-				<ul id="tagList"><li class="input">
-						<input id="tag" class="tag-input" type="text" placeholder="添加标签">
-						<ul class="suggest" id="suggest"></ul>
-					</li>
-				</ul>
-			</div>
-			<textarea name="article" id="article" cols="30" rows="10" class="text"></textarea>
-			<div id="outline" class="outline" title="大纲">
-				<h3>文章大纲</h3>
-				<ul></ul>
-			</div>
-			<i id="loading" class="loading fa fa-spinner fa-pulse"></i>
-			<div id="msg" class="msg">
-				保存成功
-			</div>
-		</div>	
-	</div>
-	<div class="trash-mode">
-		<aside>
-			<h2 class="title"><i class="fa fa-trash"></i> 回收站(<span id="trashNum">0</span>)</h2>
-			<ul class="tArticle-list"></ul>
-		</aside>
-		<div class="main">
-			<article>
-				<div class="title-wrap">
-					<h3 id="trashTitle" class="trash-title"></h3>
-					<button id="recover" class="btn-recover">恢复</button>
-					<button id="rDelete" class="btn-delete">彻底删除</button>
-				</div>
-				<div style="height: 100px;"></div>
-				<div id="trashContent" class="trash-content"></div>
-			</article>
-		</div>
-	</div>
-	<div class="tags-mode">
-		<h2>正在开发中。。。</h2>
-	</div>
-</div>
+<div id="write" class="writer"></div>
+<script src="/lib/jquery-2.2.3.min.js"></script>
+<script src="/lib/editor/simplemde.min.js"></script>
+<script src="/lib/highlight/highlight.min.js"></script>
+<script src="/admin/index.bundle.js"></script>
 <script>//将数据直接渲染到页面
 var TagArr=[],obj={},Tags={};
 // var ArticleArr=[];
@@ -104,9 +43,5 @@ for(let [i,obj] of TagArr.entries()){
 	Tags[obj.name].id=obj.tag_id;
 }
 </script>
-<script src="/lib/jquery-2.2.3.min.js"></script>
-<script src="/lib/editor/simplemde.min.js"></script>
-<script src="/lib/highlight/highlight.min.js"></script>
-<script src="/js/writer.js"></script>
 </body>
 </html>

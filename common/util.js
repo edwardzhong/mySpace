@@ -1,4 +1,5 @@
 /**
+ * html encode
  * html转码
  * @param  {[type]} str [description]
  * @return {[type]}     [description]
@@ -12,7 +13,9 @@ function htmlEncode(str){
 		.replace(/\'/g,'&#39;')
 		.replace(/\"/g,'&quot;');
 }
+
 /**
+ * html decode
  * html解码
  * @param  {[type]} str [description]
  * @return {[type]}     [description]
@@ -28,6 +31,7 @@ function htmlDecode (str){
 }
 
 /**
+ * Count the number of string
  * 计算字符串文字数量(拉丁中日韩字符)
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
@@ -80,6 +84,7 @@ function getContentSummary(marked,str,n){
 }
 
 /**
+ * so far the time
  * 到目前为止的时间
  * @param  {[type]} ints [description]
  * @return {[type]}       [description]

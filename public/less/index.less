@@ -726,7 +726,6 @@ footer{
     }
 }
 .trash-mode{
-    display: none;
     height: 100%;
     aside{
         float: left;
@@ -832,7 +831,6 @@ footer{
     display: none;
 }
 .write-mode{
-    display: none;
     width: 100%;
     height: 100%;
     min-width: 1024px;
@@ -905,7 +903,6 @@ footer{
             }
             i{
                 position: absolute;
-                display: none;
                 color: @gray;
                 top: 10px;
                 right: 15px;
@@ -920,7 +917,8 @@ footer{
         width: 25%;
         min-width: 256px;
         height: 100%;
-        overflow-y: scroll;
+        overflow: hidden;
+        // overflow-y: scroll;
         border-right: 1px solid @gray;
         font-size: 15px;
         color:lighten(@black,30%);
@@ -928,14 +926,18 @@ footer{
             display: block;
             padding: 20px;
             color:lighten(@black,30%);
+            border-bottom: 1px solid @gray;
             cursor: pointer;
         }
         .article-list{
-            li{
+            overflow-y: auto;
+            height: calc(~"100% - 62px");
+            .article-item{
+                display: block;
                 height: 80px;
                 padding: 20px 20px 0 20px;
                 // padding: 20px 60px 0 20px;
-                border-top: 1px solid @gray;
+                border-bottom: 1px solid @gray;
                 border-left: 4px solid @white;
                 color:lighten(@black,30%);
                 cursor: pointer;
@@ -976,15 +978,6 @@ footer{
                 color: darken(@gray,10%);
                 font-size: 18px; 
             }
-            a{
-                display: block;
-                height: 20px;
-                padding-left:40px;
-                color:inherit;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
             p{
                 margin: 0;
                 line-height: 25px;
@@ -993,6 +986,13 @@ footer{
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+            }
+            .title{
+                font-size: 16px;
+                line-height: 16px;
+                height: 20px;
+                padding-left:40px;
+                color:inherit;
             }
             .desc{
                 padding-left:40px;
@@ -1040,6 +1040,16 @@ footer{
                 border-width: 10px;
                 border-style: solid;
                 border-color: transparent transparent @white transparent;
+            }
+            &.arrow-down {
+                &::before{
+                    top: 120px;
+                    border-color: @gray transparent transparent transparent;
+                }
+                &::after{
+                    top: 119px;
+                    border-color: @white transparent transparent transparent;
+                }
             }
             li{
                 padding: 8px 20px;

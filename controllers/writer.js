@@ -14,6 +14,7 @@ marked.setOptions({
 });
 
 /**
+ * return writer page
  * 编辑器页面
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -35,6 +36,7 @@ exports.writer=async function(ctx,next){
 };
 
 /**
+ * delete tag
  * 删除标签
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -49,7 +51,8 @@ exports.deleteTag=async function(ctx,next){
 		return;
 	}
 	try{
-		let form=ctx.query,
+		// let form=ctx.query,
+		let form=ctx.request.body,
 			user=ctx.session.user,
 			tagRet;
 		if(form.isDeleteTag==1){
@@ -73,6 +76,7 @@ exports.deleteTag=async function(ctx,next){
 };
 
 /**
+ * add tag
  * 增加标签
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -87,7 +91,8 @@ exports.addTag=async function(ctx,next){
 		return;
 	}
 	try{
-		let form=ctx.query,
+		// let form=ctx.query,
+		let form=ctx.request.body,
 			user=ctx.session.user,
 			tagRet;
 

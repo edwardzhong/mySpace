@@ -1,3 +1,7 @@
+/**
+ * logger config
+ * @type {Object}
+ */
 module.exports={
     "appenders": [
         // {

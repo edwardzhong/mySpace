@@ -1,4 +1,5 @@
 /**
+ * database connect pool utility
  * 数据库连接池工具类
  */
 const mysql = require('mysql');
@@ -7,6 +8,7 @@ const log=require('../common/logger').logger();
 let pool = null;
 
 /**
+ * get the connection of database
  * 获取数据库连接
  * @param cbk
  */
@@ -28,6 +30,7 @@ exports.getConnection = function(cbk){
 }
 
 /**
+ * get the connection pool of database
  * 获取数据库连接池
  * @returns {*}
  */

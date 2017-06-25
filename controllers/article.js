@@ -15,7 +15,8 @@ marked.setOptions({
 });
 
 /**
- * 获取文章内容
+ * return article page by article Id
+ * 通过文章Id获取文章内容
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]
@@ -40,6 +41,7 @@ exports.article=async function(ctx,next){
 };
 
 /**
+ * get the inserted id
  * 获取插入的id
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -73,7 +75,8 @@ exports.create=async function(ctx,next){
 };
 
 /**
- * 根据文章id获取内容
+ * get article content by id
+ * 通过文章id获取文章内容
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]
@@ -104,7 +107,8 @@ exports.getArticle=async function(ctx,next){
 };
 
 /**
- * 保存
+ * save article
+ * 保存文章
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
  * @return {[type]}        [description]
@@ -136,6 +140,7 @@ exports.saveArticle =async function(ctx,next){
 };
 
 /**
+ * get the article list by userId
  * 获取用户的文章信息
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -158,6 +163,7 @@ exports.getUserArticles=async function(ctx,next){
 			obj.tags=tags.filter(tag=>tag.article_id==obj.id);
 			obj.summary=util.getContentSummary(marked,obj.content,20);
 			obj.content=util.htmlDecode(obj.content);
+			obj.words=util.wordCount(obj.content);
 		}
 		ctx.body=await{
 			status:0,
@@ -176,6 +182,7 @@ exports.getUserArticles=async function(ctx,next){
 };
 
 /**
+ * set the is_publish
  * 设置发布标志
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -189,7 +196,8 @@ exports.setPublish=async function(ctx,next){
 		};
 		return;
 	}
-	let form=ctx.query,
+	// let form=ctx.query,
+	let form=ctx.request.body,
 		isPublish=parseInt(form.isPublish,10),
 		articleId=parseInt(form.articleId,10),
 		newPublish=1-isPublish;
@@ -213,6 +221,7 @@ exports.setPublish=async function(ctx,next){
 };
 
 /**
+ * set the is_delete
  * 设置删除标志
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -226,7 +235,8 @@ exports.setDelete=async function(ctx,next){
 		};
 		return;
 	}
-	let form=ctx.query,
+	let form=ctx.request.body,
+	// let form=ctx.query,
 		isDelete=parseInt(form.isDelete,10),
 		articleId=parseInt(form.articleId,10),
 		newDelete=1-isDelete;
@@ -250,6 +260,7 @@ exports.setDelete=async function(ctx,next){
 };
 
 /**
+ * delete the article
  * 彻底删除
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -263,7 +274,8 @@ exports.realDelete=async function(ctx,next){
 		};
 		return;
 	}
-	let form=ctx.query,
+	// let form=ctx.query,
+	let form=ctx.request.body,
 		user=ctx.session.user;
 	try{
 		await articleDao.realDelete(form.id);
@@ -284,6 +296,7 @@ exports.realDelete=async function(ctx,next){
 };
 
 /**
+ * add the comment
  * 添加评论
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]
@@ -316,6 +329,7 @@ exports.postComment=async function(ctx,next){
 };
 
 /**
+ * get the comment list
  * 获取评论列表
  * @param  {[type]}   ctx  [description]
  * @param  {Function} next [description]

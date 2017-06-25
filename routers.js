@@ -20,21 +20,20 @@ module.exports=function(router){
 			ctx.body=await ctx.render('about');
 		})
 		.get('/writer',writerCtr.writer)
-		.get('/addTag',writerCtr.addTag)
-		.get('/deleteTag',writerCtr.deleteTag)
+		.post('/addTag',writerCtr.addTag)
+		.delete('/deleteTag',writerCtr.deleteTag)
 		.post('/uploadFile',fileCtr.uploadFile)
 		.get('/downloadFile',fileCtr.downloadFile)
 		.get('/createNew',articleCtr.create)
 		.get('/getArticle',articleCtr.getArticle)
 		.get('/getUserArticles',articleCtr.getUserArticles)
 		.post('/saveArticle',articleCtr.saveArticle)
-		.get('/publish',articleCtr.setPublish)
-		.get('/delete',articleCtr.setDelete)
-		.get('/realDelete',articleCtr.realDelete)
+		.put('/publish',articleCtr.setPublish)
+		.put('/delete',articleCtr.setDelete)
+		.delete('/realDelete',articleCtr.realDelete)
 		.post('/postComment',articleCtr.postComment)
 		.get('/getComments',articleCtr.getComments)
 		.post('/login',userCtr.login)
 		.post('/register',userCtr.register)
-		.post('/sql',toolCtr.query);
-
+		.get('/sql',toolCtr.query);
 };
