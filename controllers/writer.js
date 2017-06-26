@@ -33,7 +33,9 @@ exports.writer=async function(ctx,next){
 	// 	obj.content=util.htmlDecode(obj.content);
 	// }
 	ctx.body = await ctx.render('writer',{tags:tags});
+	
 };
+
 
 /**
  * delete tag
