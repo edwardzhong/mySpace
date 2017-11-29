@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "build": "gulp",
+    "js": "gulp js",
     "dev": "node --harmony --inspect app",
     "start": "node --harmony app"
   },

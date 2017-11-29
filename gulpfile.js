@@ -46,7 +46,7 @@ gulp.task('css', function() {
 
 gulp.task('js',function(){
 	return gulp.src('./public/js/*.js')
-	    // .pipe(uglify())
+	    .pipe(uglify())
 	    // .pipe(rename({suffix: '.min'}))
 	    .pipe(rev())
 	    .pipe(gulp.dest('./public/dist/js'))
