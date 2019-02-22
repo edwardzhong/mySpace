@@ -12,12 +12,12 @@ const appConfig = require('./config/app');
 const favicon = require('koa-favicon');
 const cluster = require('cluster');
 const schedule = require('./common/schedule');
-const log=require('./common/logger').logger();
-const connectLog= require('./common/connectLog');
+const log = require('./common/logger').logger();
+const connectLog = require('./common/connectLog');
 
 // 定时任务，只在主进程执行
 // timeing task, only run in master process
-if(cluster.isMaster) {
+if (cluster.isMaster) {
     schedule.execute();
 }
 
@@ -30,16 +30,16 @@ app.use(connectLog());
 
 // session
 app.use(session({
-	key:'sessionID',
-	maxAge:1000*60*30
+    key: 'sessionID',
+    maxAge: 1000 * 60 * 30
 }));
 
 // parse request
-app.use(koaBody({ 
-    jsonLimit:1024*1024*5,
-    formLimit:1024*1024*5,
-    textLimit:1024*1024*5,
-    formidable: { uploadDir: __dirname + '/public/upload' } 
+app.use(koaBody({
+    jsonLimit: 1024 * 1024 * 5,
+    formLimit: 1024 * 1024 * 5,
+    textLimit: 1024 * 1024 * 5,
+    formidable: { uploadDir: __dirname + '/public/upload' }
 }));
 
 
@@ -52,7 +52,7 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 // 设置模版引擎
 // set template engine
 app.context.render = co.wrap(render({
-    root: __dirname + (appConfig.env === 'dev'?'/views':'/dist_views'),
+    root: __dirname + (appConfig.env === 'dev' ? '/views' : '/dist_views'),
     cache: false, // disable, set to false
     autoescape: false,
     ext: 'html',
@@ -69,17 +69,17 @@ app.use(router.routes())
 // koa已经有默认的中间件onerror对错误进行了处理，注册其中的error事件
 // koa already had middleware to deal with the error, rigister the error event
 app.on('error', (err, ctx) => {
-        // ctx.body=err;
-        ctx.status = 500;
-        ctx.statusText = 'Internal Server Error';
-        log.error(err);
+    // ctx.body=err;
+    ctx.status = 500;
+    ctx.statusText = 'Internal Server Error';
+    log.error(err);
     if (appConfig.env === 'dev') { //throw the error to frontEnd when in the develop mode
         ctx.res.end(err.message); //finish the response
     }
 });
 
 // deal 404
-app.use(async(ctx, next) => {
+app.use(async (ctx, next) => {
     ctx.status = 404;
     ctx.body = await ctx.render('404');
 });
