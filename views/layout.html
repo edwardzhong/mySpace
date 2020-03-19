@@ -1,74 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name='description' content="{{ description }}">
-	<meta name="keywords" content="{{ keywords }}"/>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
-	<meta content="yes" name="apple-mobile-web-app-capable">
-	<meta content="black" name="apple-mobile-web-app-status-bar-style">
-	<meta content="telephone=no" name="format-detection">
-	<meta content="email=no" name="format-detection">
-	<title>{% block title %}{% endblock %}</title>
-	<link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css">
-	<link rel="stylesheet" href="/lib/highlight/styles/github.css">
-	<link rel="stylesheet" href="/css/index.css">
-	<!-- <link rel="stylesheet/less" type="text/css" href="/less/index.less"> -->
-	<!-- <script src="/lib/less.min.js"></script> -->
-	{% block css %}{% endblock %}
-	</head>
-	<body>
-	{% include "parts/header.html" ignore missing %}
-		<div class="content">
-		{% block content%}{% endblock %}
-		</div>
-	{% include "parts/footer.html" ignore missing %}
-	<script src="/lib/jquery-2.2.3.min.js"></script>
-	<script>
-		var ReadMode=sessionStorage.getItem('readMode')||'',
-			$body=$(document.body),
-			$modeElem=$('#readMode');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="{{ description }}" />
+    <meta name="keywords" content="{{ keywords }}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta content="email=no" name="format-detection" />
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css" />
+    <link rel="stylesheet" href="/lib/highlight/styles/github.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <!-- <link rel="stylesheet/less" type="text/css" href="/less/index.less"> -->
+    <!-- <script src="/lib/less.min.js"></script> -->
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+    {% include "parts/header.html" ignore missing %}
+    <div class="content">
+      {% block content%}{% endblock %}
+    </div>
+    {% include "parts/footer.html" ignore missing %}
+    <script src="/lib/jquery-2.2.3.min.js"></script>
+    <script>
+      var ReadMode = sessionStorage.getItem('readMode') || '',
+        $body = $(document.body),
+        $modeElem = $('#readMode');
 
-		function setReadMode(isNight){
-			$modeElem.find('.active').removeClass('active');
-			if(isNight){
-				ReadMode='1';
-				$body.addClass('night');
-				$modeElem.find('.moon').addClass('active');
-			} else {
-				ReadMode='';
-				$body.removeClass('night');
-				$modeElem.find('.sun').addClass('active');
-			}
-		}
+      function setReadMode(isNight) {
+        $modeElem.find('.active').removeClass('active');
+        if (isNight) {
+          ReadMode = '1';
+          $body.addClass('night');
+          $modeElem.find('.moon').addClass('active');
+        } else {
+          ReadMode = '';
+          $body.removeClass('night');
+          $modeElem.find('.sun').addClass('active');
+        }
+      }
 
-		$modeElem.on('click','a',function(){
-			setReadMode($(this).index());
-			sessionStorage.setItem('readMode',ReadMode);
-		});
+      $modeElem.on('click', 'a', function() {
+        setReadMode($(this).index());
+        sessionStorage.setItem('readMode', ReadMode);
+      });
 
-		setReadMode(ReadMode);
+      setReadMode(ReadMode);
 
-		$('#bars').on('click',function(e){
-			var menu=$('.panel-set'),
-				icon=$(this).find('i');
+      $('#bars').on('click', function(e) {
+        var menu = $('.panel-set'),
+          icon = $(this).find('i');
 
-			if(icon.hasClass('fa-bars')){
-				icon.addClass('fa-close').removeClass('fa-bars');
-				menu.addClass('show');
-				setTimeout(function() {
-					menu.removeClass('show').css('top','30px');
-				}, 500);
-			} else {
-				icon.addClass('fa-bars').removeClass('fa-close');
-				menu.addClass('hide');
-				setTimeout(function() {
-					menu.removeClass('hide').css('top','-120px');
-				}, 500);
-			}		
-		});
-	</script>
-	{% block js %}{% endblock %}
-	</body>
-	</html>
+        if (icon.hasClass('fa-bars')) {
+          icon.addClass('fa-close').removeClass('fa-bars');
+          menu.addClass('show');
+          setTimeout(function() {
+            menu.removeClass('show').css('top', '30px');
+          }, 500);
+        } else {
+          icon.addClass('fa-bars').removeClass('fa-close');
+          menu.addClass('hide');
+          setTimeout(function() {
+            menu.removeClass('hide').css('top', '-120px');
+          }, 500);
+        }
+      });
+    </script>
+    {% block js %}{% endblock %}
+  </body>
+</html>

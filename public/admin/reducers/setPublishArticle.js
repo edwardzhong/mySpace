@@ -1,27 +1,31 @@
 import * as types from '../constants/setPublishType';
 
-const setPublishArticle=(state={
-  isFetching:false,
-  param:{},
-  data:{}
-},action) => {
-  switch(action.type){
+const setPublishArticle = (
+  state = {
+    isFetching: false,
+    param: {},
+    data: {},
+  },
+  action,
+) => {
+  switch (action.type) {
     case types.REQUEST_SETPUBLISH_ARTICLE:
-      return Object.assign({},state,{
-        isFetching:true,
-        param:action.param
+      return Object.assign({}, state, {
+        isFetching: true,
+        param: action.param,
       });
     case types.RECEIVE_SETPUBLISH_ARTICLE:
-      return Object.assign({},state,{
-        isFetching:false,
-        data:action.data
+      return Object.assign({}, state, {
+        isFetching: false,
+        data: action.data,
       });
     case types.REQUEST_SETPUBLISH_ERROR:
-      return Object.assign({},state,{
-        isFetching:false,
-        err:action.err
+      return Object.assign({}, state, {
+        isFetching: false,
+        err: action.err,
       });
-    default:return state;
+    default:
+      return state;
   }
 };
 

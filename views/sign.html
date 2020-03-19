@@ -1,50 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name='description' content="{{ description }}">
-	<meta name="keywords" content="{{ keywords }}"/>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
-	<meta content="yes" name="apple-mobile-web-app-capable">
-	<meta content="black" name="apple-mobile-web-app-status-bar-style">
-	<meta content="telephone=no" name="format-detection">
-	<meta content="email=no" name="format-detection">
-	<title>登录/注册-MySpace</title>
-	<link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css">
-	<link rel="stylesheet" href="/lib/highlight/styles/github.css">
-    <link rel="stylesheet" href="/css/index.css">
-	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
-	<script src="/lib/less.min.js"></script>
-</head>
-<body>
-<div class="sign">
-    <div class="main"><div>
-    		<h3>登 录</h3>
-    		<div class="control-wrap">
-    			<div class="input-control"><i class="fa fa-envelope"></i><input type="text" name="email" id="email" placeholder="邮箱"></div>
-    			<div class="input-control"><i class="fa fa-lock"></i><input type="password" name="password" id="password" placeholder="密码"></div>
-    			<button class="login-btn" id="login">登 录</button>
-    		</div>
-    		<div class="link">
-    			<a href="/"><i class="fa fa-home"></i> 主页</a>
-    			<a href="#register"><i class="fa fa-mail-forward"></i> <span>注册</span></a>
-    		</div>
-    	</div><div>
-    		<h3>注 册</h3>
-    		<div class="control-wrap">
-    			<div class="input-control"><i class="fa fa-user"></i><input type="text" name="rName" id="rName" placeholder="昵称"></div>
-    			<div class="input-control"><i class="fa fa-envelope"></i><input type="text" name="rEmail" id="rEmail" placeholder="邮箱"></div>
-    			<div class="input-control"><i class="fa fa-lock"></i><input type="password" name="rPassword" id="rPassword" placeholder="密码"></div>
-    			<button class="register-btn" id="register">注 册</button>
-    		</div>
-    		<div class="link">
-    			<a href="/"><i class="fa fa-home"></i> 主页</a>
-    			<a href="#login"><i class="fa fa-mail-forward"></i> <span>登录</span></a>
-    		</div>
-    	</div></div>
-</div>
-<script src="/lib/jquery-2.2.3.min.js"></script>
-<script src="/js/sign.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="{{ description }}" />
+    <meta name="keywords" content="{{ keywords }}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta content="email=no" name="format-detection" />
+    <title>登录/注册-MySpace</title>
+    <link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css" />
+    <link rel="stylesheet" href="/lib/highlight/styles/github.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet/less" type="text/css" href="/less/index.less" />
+    <script src="/lib/less.min.js"></script>
+  </head>
+  <body>
+    <div class="sign">
+      <div class="main">
+        <div>
+          <h3>登 录</h3>
+          <div class="control-wrap">
+            <div class="input-control">
+              <i class="fa fa-envelope"></i><input type="text" name="email" id="email" placeholder="邮箱" />
+            </div>
+            <div class="input-control">
+              <i class="fa fa-lock"></i><input type="password" name="password" id="password" placeholder="密码" />
+            </div>
+            <button class="login-btn" id="login">登 录</button>
+          </div>
+          <div class="link">
+            <a href="/"><i class="fa fa-home"></i> 主页</a>
+            <a href="#register"><i class="fa fa-mail-forward"></i> <span>注册</span></a>
+          </div>
+        </div>
+        <div>
+          <h3>注 册</h3>
+          <div class="control-wrap">
+            <div class="input-control">
+              <i class="fa fa-user"></i><input type="text" name="rName" id="rName" placeholder="昵称" />
+            </div>
+            <div class="input-control">
+              <i class="fa fa-envelope"></i><input type="text" name="rEmail" id="rEmail" placeholder="邮箱" />
+            </div>
+            <div class="input-control">
+              <i class="fa fa-lock"></i><input type="password" name="rPassword" id="rPassword" placeholder="密码" />
+            </div>
+            <button class="register-btn" id="register">注 册</button>
+          </div>
+          <div class="link">
+            <a href="/"><i class="fa fa-home"></i> 主页</a>
+            <a href="#login"><i class="fa fa-mail-forward"></i> <span>登录</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/lib/jquery-2.2.3.min.js"></script>
+    <script src="/js/sign.js"></script>
+  </body>
 </html>

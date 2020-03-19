@@ -1,7 +1,7 @@
 let helper = require('./daoHelper');
 
-const methods={
-    query:null
+const methods = {
+  query: null,
 };
 
-module.exports=helper.createMethod(methods);
+module.exports = helper.createMethod(methods);

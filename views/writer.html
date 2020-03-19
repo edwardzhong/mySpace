@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name='description' content="{{ description }}">
-	<meta name="keywords" content="{{ keywords }}"/>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
-	<meta content="yes" name="apple-mobile-web-app-capable">
-	<meta content="black" name="apple-mobile-web-app-status-bar-style">
-	<meta content="telephone=no" name="format-detection">
-	<meta content="email=no" name="format-detection">
-	<title>写文章-MySpace</title>
-	<link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css">
-	<link rel="stylesheet" href="/lib/editor/simplemde.min.css">
-	<link rel="stylesheet" href="/lib/highlight/styles/github.css">
-	<link rel="stylesheet" href="/css/index.css">
-<!-- 	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="{{ description }}" />
+    <meta name="keywords" content="{{ keywords }}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta content="email=no" name="format-detection" />
+    <title>写文章-MySpace</title>
+    <link rel="stylesheet" href="/lib/font-awesome-4.7.0/font-awesome.min.css" />
+    <link rel="stylesheet" href="/lib/editor/simplemde.min.css" />
+    <link rel="stylesheet" href="/lib/highlight/styles/github.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <!-- 	<link rel="stylesheet/less" type="text/css" href="/less/index.less">
 	<script src="/lib/less.min.js"></script>
- --></head>
-<body>
-<div id="write" class="writer"></div>
-<script src="/lib/jquery-2.2.3.min.js"></script>
-<script src="/lib/editor/simplemde.min.js"></script>
-<script src="/lib/highlight/highlight.min.js"></script>
-<script src="/admin/index.bundle.js"></script>
-<script>//将数据直接渲染到页面
-var TagArr=[],obj={},Tags={};
-// var ArticleArr=[];
-{% for tag in tags %}
-	obj={}
-	{% for p in tag %}
-		obj['{{loop.key}}']='{{p}}';
-	{% endfor %}
-	TagArr.push(obj);
-{% endfor %}
+ -->
+  </head>
+  <body>
+    <div id="write" class="writer"></div>
+    <script src="/lib/jquery-2.2.3.min.js"></script>
+    <script src="/lib/editor/simplemde.min.js"></script>
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script src="/admin/index.bundle.js"></script>
+    <script>
+      //将数据直接渲染到页面
+      var TagArr=[],obj={},Tags={};
+      // var ArticleArr=[];
+      {% for tag in tags %}
+      	obj={}
+      	{% for p in tag %}
+      		obj['{{loop.key}}']='{{p}}';
+      	{% endfor %}
+      	TagArr.push(obj);
+      {% endfor %}
 
-for(let [i,obj] of TagArr.entries()){
-	Tags[obj.name]=Tags[obj.name]||{};
-	Tags[obj.name].tags=Tags[obj.name].tags||[];
-	Tags[obj.name].tags.push(obj.article_id);
-	Tags[obj.name].name=obj.name;
-	Tags[obj.name].id=obj.tag_id;
-}
-</script>
-</body>
+      for(let [i,obj] of TagArr.entries()){
+      	Tags[obj.name]=Tags[obj.name]||{};
+      	Tags[obj.name].tags=Tags[obj.name].tags||[];
+      	Tags[obj.name].tags.push(obj.article_id);
+      	Tags[obj.name].name=obj.name;
+      	Tags[obj.name].id=obj.tag_id;
+      }
+    </script>
+  </body>
 </html>
